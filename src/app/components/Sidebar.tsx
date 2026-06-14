@@ -1,35 +1,27 @@
 import { useState } from "react";
 import {
   LayoutDashboard,
+  FolderKanban,
   KanbanSquare,
   Users,
   MessageSquare,
   BarChart3,
-  Settings,
-  Bell,
-  ChevronLeft,
-  ChevronRight,
-  Zap,
-  FolderKanban,
-} from "lucide-react";
-
-import {
-  LayoutDashboard,
-  FolderKanban,
-  Users,
-  MessageSquare,
-  BarChart3,
+  LineChart,
   Settings,
   LogOut,
   Zap,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "proyectos", label: "Proyectos", icon: FolderKanban },
+  { id: "tablero", label: "Tablero Ágil", icon: KanbanSquare },
   { id: "recursos", label: "Recursos", icon: Users },
   { id: "comunicacion", label: "Comunicación", icon: MessageSquare },
   { id: "reportes", label: "Reportes", icon: BarChart3 },
+  { id: "analiticas", label: "Analíticas Avanzadas", icon: LineChart },
   { id: "configuracion", label: "Configuración", icon: Settings },
 ];
 
@@ -52,7 +44,6 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
         flexShrink: 0,
       }}
     >
-      {/* Logo */}
       <div
         className="flex items-center gap-3 px-4 py-5"
         style={{ borderBottom: "1px solid var(--sidebar-border)" }}
@@ -68,6 +59,7 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
         >
           <Zap size={18} color="#FFFFFF" strokeWidth={2.5} fill="#FFFFFF" />
         </div>
+
         {!collapsed && (
           <div>
             <div
@@ -95,10 +87,10 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
         )}
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 py-6 px-3 flex flex-col gap-1.5">
         {navItems.map(({ id, label, icon: Icon }) => {
           const active = activeView === id;
+
           return (
             <button
               key={id}
@@ -112,7 +104,14 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
                 cursor: "pointer",
               }}
             >
-              <Icon size={18} strokeWidth={active ? 2.5 : 1.8} style={{ color: active ? "#FFFFFF" : "rgba(238, 237, 254, 0.65)" }} />
+              <Icon
+                size={18}
+                strokeWidth={active ? 2.5 : 1.8}
+                style={{
+                  color: active ? "#FFFFFF" : "rgba(238, 237, 254, 0.65)",
+                }}
+              />
+
               {!collapsed && (
                 <span style={{ fontSize: "0.88rem", fontWeight: active ? 600 : 500 }}>
                   {label}
@@ -123,7 +122,6 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
         })}
       </nav>
 
-      {/* Bottom */}
       <div
         className="px-3 pb-6 flex flex-col gap-1.5"
         style={{ borderTop: "1px solid var(--sidebar-border)", paddingTop: "1rem" }}
@@ -135,21 +133,43 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
           title={collapsed ? "Cerrar sesión" : undefined}
         >
           <LogOut size={18} strokeWidth={1.8} />
-          {!collapsed && <span style={{ fontSize: "0.88rem", fontWeight: 500 }}>Cerrar sesión</span>}
+          {!collapsed && (
+            <span style={{ fontSize: "0.88rem", fontWeight: 500 }}>
+              Cerrar sesión
+            </span>
+          )}
         </button>
 
-        {/* User */}
-        <div className="flex items-center gap-3 px-3 py-2.5 mt-2 rounded-xl"
-          style={{ background: "rgba(238, 237, 254, 0.08)", border: "1px solid rgba(255, 255, 255, 0.05)" }}>
+        <div
+          className="flex items-center gap-3 px-3 py-2.5 mt-2 rounded-xl"
+          style={{
+            background: "rgba(238, 237, 254, 0.08)",
+            border: "1px solid rgba(255, 255, 255, 0.05)",
+          }}
+        >
           <div
             className="rounded-full shrink-0 flex items-center justify-center font-bold"
-            style={{ width: 32, height: 32, background: "var(--primary)", color: "#FFFFFF", fontSize: "0.78rem" }}
+            style={{
+              width: 32,
+              height: 32,
+              background: "var(--primary)",
+              color: "#FFFFFF",
+              fontSize: "0.78rem",
+            }}
           >
             AM
           </div>
+
           {!collapsed && (
             <div>
-              <div style={{ color: "#FFFFFF", fontSize: "0.82rem", fontWeight: 600, lineHeight: 1.2 }}>
+              <div
+                style={{
+                  color: "#FFFFFF",
+                  fontSize: "0.82rem",
+                  fontWeight: 600,
+                  lineHeight: 1.2,
+                }}
+              >
                 Ana Martínez
               </div>
               <div style={{ color: "rgba(238, 237, 254, 0.5)", fontSize: "0.68rem" }}>
@@ -160,7 +180,6 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
         </div>
       </div>
 
-      {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="absolute top-5 -right-3 rounded-full flex items-center justify-center transition-colors"
