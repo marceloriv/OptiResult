@@ -78,6 +78,10 @@ build/
 *.njsproj
 *.sln
 *.sw?
+.agents/
+.skill/
+.skills/
+skills/
 
 # OS metadata
 .DS_Store

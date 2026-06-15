@@ -1,24 +1,25 @@
+import { useEffect, useState } from "react";
 import {
-  AlertTriangle,
-  Brain,
-  CheckCircle2,
-  Clock,
-  Lightbulb,
-  LineChart as LineChartIcon,
-  TrendingUp,
-  Users,
+    AlertTriangle,
+    Brain,
+    CheckCircle2,
+    Clock,
+    Lightbulb,
+    LineChart as LineChartIcon,
+    TrendingUp,
+    Users,
 } from "lucide-react";
 import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
+    Area,
+    AreaChart,
+    Bar,
+    BarChart,
+    CartesianGrid,
+    Cell,
+    ResponsiveContainer,
+    Tooltip,
+    XAxis,
+    YAxis,
 } from "recharts";
 
 const efficiencyData = [
@@ -160,16 +161,27 @@ function RiskBadge({ risk }: { risk: string }) {
 }
 
 export function AdvancedAnalytics() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div
-      className="h-full overflow-y-auto p-6 flex flex-col gap-6"
+      className="h-full overflow-y-auto p-4 sm:p-6 flex flex-col gap-4 sm:gap-6"
       style={{ background: "#F8FAFC", fontFamily: "'Inter', sans-serif" }}
+      role="main"
+      aria-label="Analíticas avanzadas"
     >
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <Brain size={24} className="text-[#534AB7]" />
-            <h1 className="text-2xl font-extrabold text-slate-900">
+            <Brain size={24} className="text-[#534AB7]" aria-hidden="true" />
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">
               Analíticas Avanzadas
             </h1>
           </div>
@@ -178,12 +190,12 @@ export function AdvancedAnalytics() {
           </p>
         </div>
 
-        <button className="bg-[#534AB7] text-white rounded-xl px-4 py-2 text-sm font-bold shadow-sm hover:opacity-90 transition-all">
+        <button className="bg-[#534AB7] text-white rounded-xl px-4 py-2 text-sm font-bold shadow-sm hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "40px" }} aria-label="Generar informe predictivo">
           Generar informe predictivo
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KpiCard
           title="Riesgo global"
           value="68%"
@@ -214,8 +226,8 @@ export function AdvancedAnalytics() {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="col-span-1 lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-base font-bold text-slate-900">
@@ -225,7 +237,7 @@ export function AdvancedAnalytics() {
                 Evolución semanal de la eficiencia global y disminución del riesgo.
               </p>
             </div>
-            <LineChartIcon size={20} className="text-[#534AB7]" />
+            <LineChartIcon size={20} className="text-[#534AB7]" aria-hidden="true" />
           </div>
 
           <div style={{ width: "100%", height: 280 }}>
@@ -256,9 +268,9 @@ export function AdvancedAnalytics() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle size={18} className="text-red-600" />
+            <AlertTriangle size={18} className="text-red-600" aria-hidden="true" />
             <h2 className="text-base font-bold text-slate-900">
               Alertas inteligentes
             </h2>
@@ -283,8 +295,8 @@ export function AdvancedAnalytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
           <h2 className="text-base font-bold text-slate-900 mb-1">
             Riesgo predictivo por proyecto
           </h2>
@@ -312,7 +324,7 @@ export function AdvancedAnalytics() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
           <h2 className="text-base font-bold text-slate-900 mb-1">
             Carga laboral por equipo
           </h2>
@@ -341,10 +353,10 @@ export function AdvancedAnalytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-1 bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="col-span-1 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Lightbulb size={18} className="text-[#534AB7]" />
+            <Lightbulb size={18} className="text-[#534AB7]" aria-hidden="true" />
             <h2 className="text-base font-bold text-slate-900">
               Recomendaciones del sistema
             </h2>
@@ -353,14 +365,14 @@ export function AdvancedAnalytics() {
           <div className="flex flex-col gap-3">
             {recommendations.map((item) => (
               <div key={item} className="flex gap-2">
-                <CheckCircle2 size={16} className="text-green-600 shrink-0 mt-0.5" />
+                <CheckCircle2 size={16} className="text-green-600 shrink-0 mt-0.5" aria-hidden="true" />
                 <p className="text-sm text-slate-600">{item}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+        <div className="col-span-1 lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
           <h2 className="text-base font-bold text-slate-900 mb-1">
             Matriz de proyectos con riesgo
           </h2>
@@ -368,17 +380,17 @@ export function AdvancedAnalytics() {
             Vista ejecutiva para priorizar acciones correctivas.
           </p>
 
-          <div className="overflow-hidden rounded-xl border border-slate-200">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-500">
-                <tr>
-                  <th className="text-left px-4 py-3 font-bold">Proyecto</th>
-                  <th className="text-left px-4 py-3 font-bold">Avance</th>
-                  <th className="text-left px-4 py-3 font-bold">Riesgo</th>
-                  <th className="text-left px-4 py-3 font-bold">Causa</th>
-                  <th className="text-left px-4 py-3 font-bold">Acción sugerida</th>
-                </tr>
-              </thead>
+          <div className="overflow-x-auto rounded-xl border border-slate-200" role="region" aria-label="Tabla de proyectos con riesgo" tabIndex={0}>
+          <table className="w-full text-sm" role="table">
+            <thead className="bg-slate-50 text-slate-500">
+              <tr>
+                <th className="text-left px-4 py-3 font-bold" scope="col">Proyecto</th>
+                <th className="text-left px-4 py-3 font-bold" scope="col">Avance</th>
+                <th className="text-left px-4 py-3 font-bold" scope="col">Riesgo</th>
+                <th className="text-left px-4 py-3 font-bold hidden sm:table-cell" scope="col">Causa</th>
+                <th className="text-left px-4 py-3 font-bold hidden sm:table-cell" scope="col">Acción sugerida</th>
+              </tr>
+            </thead>
               <tbody className="divide-y divide-slate-100">
                 {projectTable.map((row) => (
                   <tr key={row.project} className="hover:bg-slate-50">
@@ -387,15 +399,15 @@ export function AdvancedAnalytics() {
                     <td className="px-4 py-3">
                       <RiskBadge risk={row.risk} />
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{row.cause}</td>
-                    <td className="px-4 py-3 text-[#534AB7] font-semibold">
+                    <td className="px-4 py-3 text-slate-600 hidden sm:table-cell">{row.cause}</td>
+                    <td className="px-4 py-3 text-[#534AB7] font-semibold hidden sm:table-cell">
                       {row.action}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
+            </div>
         </div>
       </div>
     </div>

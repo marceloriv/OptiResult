@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, MoreHorizontal, Flag, Calendar, User, ChevronDown, Tag } from "lucide-react";
+import { Calendar, ChevronDown, Flag, MoreHorizontal, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type Priority = "alta" | "media" | "baja";
 type Column = "backlog" | "progreso" | "revision" | "listo";
@@ -77,8 +77,12 @@ function TaskCard({ task }: { task: Task }) {
             </span>
           ))}
         </div>
-        <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          <MoreHorizontal size={14} />
+        <button
+          style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer", padding: 0, minHeight: "32px", minWidth: "32px" }}
+          className="focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2 rounded"
+          aria-label="Más opciones"
+        >
+          <MoreHorizontal size={14} aria-hidden="true" />
         </button>
       </div>
 
@@ -126,47 +130,62 @@ function TaskCard({ task }: { task: Task }) {
 export function AgileBoard() {
   const [tasks, setTasks] = useState(initialTasks);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   const sprints = ["Sprint 12 — Actual", "Sprint 11", "Sprint 10"];
   const [activeSprint, setActiveSprint] = useState(sprints[0]);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Header */}
       <div
-        className="flex items-center justify-between px-6 py-4 shrink-0"
+        className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-4 shrink-0 gap-4"
         style={{ borderBottom: "1px solid var(--border)" }}
       >
         <div>
-          <h1 style={{ color: "var(--foreground)", fontSize: "1.4rem", fontWeight: 700 }}>
+          <h1 className="text-xl sm:text-2xl" style={{ color: "var(--foreground)", fontWeight: 700 }}>
             Tablero Ágil
           </h1>
           <p style={{ color: "var(--muted-foreground)", fontSize: "0.82rem", marginTop: "0.2rem" }}>
             Proyecto Alpha · Q2 2026
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Sprint selector */}
           <div
             className="flex items-center gap-2 rounded-lg px-3 py-2"
-            style={{ background: "var(--muted)", cursor: "pointer", border: "1px solid var(--border)" }}
+            style={{ background: "var(--muted)", cursor: "pointer", border: "1px solid var(--border)", minHeight: "40px" }}
+            role="button"
+            tabIndex={0}
+            aria-label={`Sprint actual: ${activeSprint}`}
+            aria-haspopup="listbox"
           >
             <span style={{ fontSize: "0.78rem", color: "var(--foreground)" }}>{activeSprint}</span>
-            <ChevronDown size={13} color="var(--muted-foreground)" />
+            <ChevronDown size={13} color="var(--muted-foreground)" aria-hidden="true" />
           </div>
           <button
-            className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors"
-            style={{ background: "var(--primary)", color: "var(--primary-foreground)", border: "none", cursor: "pointer", fontSize: "0.8rem", fontWeight: 500 }}
+            className="flex items-center gap-2 rounded-lg px-3 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
+            style={{ background: "var(--primary)", color: "var(--primary-foreground)", border: "none", cursor: "pointer", fontSize: "0.8rem", fontWeight: 500, minHeight: "40px" }}
+            aria-label="Crear nueva tarea"
           >
-            <Plus size={14} /> Nueva Tarea
+            <Plus size={14} aria-hidden="true" /> Nueva Tarea
           </button>
         </div>
       </div>
 
       {/* Stats bar */}
       <div
-        className="flex items-center gap-6 px-6 py-3 shrink-0"
+        className="flex items-center gap-4 sm:gap-6 px-4 sm:px-6 py-3 shrink-0 overflow-x-auto"
         style={{ borderBottom: "1px solid var(--border)", background: "rgba(13,21,71,0.4)" }}
+        role="region"
+        aria-label="Estadísticas del sprint"
       >
         {[
           { label: "Total tareas", value: Object.values(tasks).flat().length },
@@ -182,31 +201,42 @@ export function AgileBoard() {
       </div>
 
       {/* Board columns */}
-      <div className="flex gap-4 p-6 overflow-x-auto flex-1 items-start">
+      <div
+        className={isMobile ? "flex flex-col gap-4 p-4 overflow-y-auto flex-1" : "flex gap-4 p-6 overflow-x-auto flex-1 items-start"}
+        role="region"
+        aria-label="Tablero kanban"
+      >
         {columns.map((col) => {
           const colTasks = tasks[col.id];
           return (
             <div
               key={col.id}
               className="flex flex-col gap-3 shrink-0"
-              style={{ width: 280 }}
+              style={{ width: isMobile ? "100%" : 280, minWidth: isMobile ? "100%" : 280 }}
+              role="region"
+              aria-label={`Columna ${col.label} con ${colTasks.length} tareas`}
             >
               {/* Column header */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="rounded-full" style={{ width: 8, height: 8, background: col.color }} />
+                  <div className="rounded-full" style={{ width: 8, height: 8, background: col.color }} aria-hidden="true" />
                   <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>
                     {col.label}
                   </span>
                   <span
                     className="rounded-full px-2 py-0.5"
                     style={{ fontSize: "0.65rem", background: col.color + "22", color: col.color, fontWeight: 700 }}
+                    aria-label={`${colTasks.length} tareas`}
                   >
                     {colTasks.length}
                   </span>
                 </div>
-                <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
-                  <Plus size={14} />
+                <button
+                  style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer", minHeight: "32px", minWidth: "32px" }}
+                  className="focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2 rounded"
+                  aria-label={`Añadir tarea a ${col.label}`}
+                >
+                  <Plus size={14} aria-hidden="true" />
                 </button>
               </div>
 
@@ -223,16 +253,18 @@ export function AgileBoard() {
                 ))}
 
                 <button
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 w-full transition-colors"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 w-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
                   style={{
                     background: "transparent",
                     border: "none",
                     color: "var(--muted-foreground)",
                     cursor: "pointer",
                     fontSize: "0.75rem",
+                    minHeight: "40px",
                   }}
+                  aria-label={`Añadir tarea a ${col.label}`}
                 >
-                  <Plus size={13} /> Añadir tarea
+                  <Plus size={13} aria-hidden="true" /> Añadir tarea
                 </button>
               </div>
             </div>

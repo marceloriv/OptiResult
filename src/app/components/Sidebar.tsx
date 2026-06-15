@@ -1,18 +1,18 @@
-import { useState } from "react";
 import {
-  LayoutDashboard,
-  FolderKanban,
-  KanbanSquare,
-  Users,
-  MessageSquare,
-  BarChart3,
-  LineChart,
-  Settings,
-  LogOut,
-  Zap,
-  ChevronLeft,
-  ChevronRight,
+    BarChart3,
+    ChevronLeft,
+    ChevronRight,
+    FolderKanban,
+    KanbanSquare,
+    LayoutDashboard,
+    LineChart,
+    LogOut,
+    MessageSquare,
+    Settings,
+    Users,
+    Zap,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -29,20 +29,44 @@ interface SidebarProps {
   activeView: string;
   onNavigate: (view: string) => void;
   onLogout: () => void;
+  mobileMenuOpen?: boolean;
+  setMobileMenuOpen?: (open: boolean) => void;
 }
 
-export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
+export function Sidebar({ activeView, onNavigate, onLogout, mobileMenuOpen, setMobileMenuOpen }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Auto-collapse on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setCollapsed(true);
+    }
+  }, [isMobile]);
 
   return (
     <aside
       className="flex flex-col h-screen transition-all duration-300 relative"
       style={{
-        width: collapsed ? "64px" : "240px",
+        width: isMobile ? (mobileMenuOpen ? "240px" : "0px") : (collapsed ? "64px" : "240px"),
         background: "var(--sidebar)",
-        borderRight: "1px solid var(--sidebar-border)",
+        borderRight: isMobile ? "none" : "1px solid var(--sidebar-border)",
         flexShrink: 0,
+        position: isMobile ? "fixed" : "relative",
+        zIndex: isMobile ? 50 : "auto",
+        transform: isMobile ? (mobileMenuOpen ? "translateX(0)" : "translateX(-100%)") : "translateX(0)",
+        visibility: isMobile && !mobileMenuOpen ? "hidden" : "visible",
       }}
+      role="navigation"
+      aria-label="Navegación principal"
+      aria-hidden={isMobile && !mobileMenuOpen ? "true" : undefined}
     >
       <div
         className="flex items-center gap-3 px-4 py-5"
@@ -60,7 +84,7 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
           <Zap size={18} color="#FFFFFF" strokeWidth={2.5} fill="#FFFFFF" />
         </div>
 
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <div>
             <div
               style={{
@@ -87,7 +111,7 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
         )}
       </div>
 
-      <nav className="flex-1 py-6 px-3 flex flex-col gap-1.5">
+      <nav className="flex-1 py-6 px-3 flex flex-col gap-1.5" aria-label="Menú de navegación">
         {navItems.map(({ id, label, icon: Icon }) => {
           const active = activeView === id;
 
@@ -96,13 +120,16 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
               key={id}
               onClick={() => onNavigate(id)}
               title={collapsed ? label : undefined}
-              className="flex items-center gap-3 rounded-xl px-3.5 py-3 w-full text-left transition-all duration-150"
+              className="flex items-center gap-3 rounded-xl px-3.5 py-3 w-full text-left transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#534AB7]"
               style={{
                 background: active ? "rgba(83, 74, 183, 0.15)" : "transparent",
                 color: active ? "#FFFFFF" : "rgba(238, 237, 254, 0.65)",
                 borderLeft: active ? "3px solid #FFFFFF" : "3px solid transparent",
                 cursor: "pointer",
+                minHeight: "44px",
               }}
+              aria-current={active ? "page" : undefined}
+              aria-label={label}
             >
               <Icon
                 size={18}
@@ -112,7 +139,7 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
                 }}
               />
 
-              {!collapsed && (
+              {(!collapsed || isMobile) && (
                 <span style={{ fontSize: "0.88rem", fontWeight: active ? 600 : 500 }}>
                   {label}
                 </span>
@@ -128,12 +155,13 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
       >
         <button
           onClick={onLogout}
-          className="flex items-center gap-3 rounded-xl px-3.5 py-3 w-full text-left transition-all duration-150 text-red-400 hover:bg-red-500/10"
-          style={{ cursor: "pointer" }}
+          className="flex items-center gap-3 rounded-xl px-3.5 py-3 w-full text-left transition-all duration-150 text-red-400 hover:bg-red-500/10 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-[#534AB7]"
+          style={{ cursor: "pointer", minHeight: "44px" }}
           title={collapsed ? "Cerrar sesión" : undefined}
+          aria-label="Cerrar sesión"
         >
           <LogOut size={18} strokeWidth={1.8} />
-          {!collapsed && (
+          {(!collapsed || isMobile) && (
             <span style={{ fontSize: "0.88rem", fontWeight: 500 }}>
               Cerrar sesión
             </span>
@@ -160,7 +188,7 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
             AM
           </div>
 
-          {!collapsed && (
+          {(!collapsed || isMobile) && (
             <div>
               <div
                 style={{
@@ -182,16 +210,19 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
 
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute top-5 -right-3 rounded-full flex items-center justify-center transition-colors"
+        className="absolute top-5 -right-3 rounded-full flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#534AB7]"
         style={{
-          width: 22,
-          height: 22,
+          width: 44,
+          height: 44,
           background: "var(--sidebar)",
           border: "1px solid var(--sidebar-border)",
           color: "var(--muted-foreground)",
           cursor: "pointer",
           zIndex: 10,
+          display: isMobile ? "none" : "flex",
         }}
+        aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
+        aria-expanded={!collapsed}
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
       </button>
