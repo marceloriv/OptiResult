@@ -232,7 +232,7 @@ export default function App() {
 
             <button
               className="relative rounded-xl p-2 bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-[#534AB7]"
-              style={{ minHeight: "40px", minWidth: "40px" }}
+              style={{ minHeight: "44px", minWidth: "44px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
               aria-label={`Notificaciones (${notifications} nuevas)`}
               aria-live="polite"
             >
@@ -259,22 +259,20 @@ export default function App() {
             <div className="hidden sm:block w-px h-5 bg-slate-200" />
 
             <div className="flex items-center gap-2">
-              <div
-                className="rounded-full flex items-center justify-center cursor-pointer font-bold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
+              <button
+                className="rounded-full flex items-center justify-center cursor-pointer font-bold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2 hover:opacity-90 transition-opacity"
                 style={{
                   width: 32,
                   height: 32,
                   background: "#534AB7",
                   fontSize: "0.78rem",
-                  minHeight: "32px",
-                  minWidth: "32px",
+                  minHeight: "44px",
+                  minWidth: "44px",
                 }}
-                tabIndex={0}
-                role="button"
                 aria-label="Perfil de Carlos López"
               >
                 CL
-              </div>
+              </button>
               <div className="hidden sm:flex flex-col text-left">
                 <span className="text-xs font-bold text-slate-800">Carlos López</span>
                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Developer Lead</span>

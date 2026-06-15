@@ -170,8 +170,8 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               </h2>
               <button
                 onClick={() => onNavigate("proyectos")}
-                className="text-xs font-bold text-[#534AB7] hover:underline flex items-center gap-0.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2 rounded px-2 py-1"
-                style={{ minHeight: "40px" }}
+                className="text-xs font-bold text-[#534AB7] hover:underline flex items-center gap-0.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2 rounded px-2.5 py-1.5"
+                style={{ minHeight: "44px", minWidth: "44px" }}
                 aria-label="Ver todos los proyectos"
               >
                 Ver todos <ArrowUpRight size={14} aria-hidden="true" />
@@ -226,14 +226,14 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                           <button
                             onClick={() => onNavigate("proyectos")}
                             className="p-2 text-slate-400 hover:text-[#534AB7] rounded hover:bg-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
-                            style={{ minHeight: "36px", minWidth: "36px" }}
+                            style={{ minHeight: "44px", minWidth: "44px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
                             aria-label={`Ver proyecto ${p.name}`}
                           >
                             <Eye size={14} aria-hidden="true" />
                           </button>
                           <button
                             className="p-2 text-slate-400 hover:text-[#534AB7] rounded hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
-                            style={{ minHeight: "36px", minWidth: "36px" }}
+                            style={{ minHeight: "44px", minWidth: "44px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
                             aria-label={`Editar proyecto ${p.name}`}
                           >
                             <Edit2 size={14} aria-hidden="true" />
@@ -270,9 +270,9 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               </div>
             </div>
             <button
-              onClick={() => onNavigate("proyectos")}
-              className="bg-[#534AB7] hover:bg-[#4339A6] text-white font-bold text-xs px-4 py-2 rounded-lg transition-all cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
-              style={{ minHeight: "40px" }}
+              onClick={() => onNavigate("tablero")}
+              className="bg-[#534AB7] hover:bg-[#4339A6] text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-all cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
+              style={{ minHeight: "44px" }}
               aria-label="Abrir tablero Kanban completo"
             >
               Abrir Kanban completo →
