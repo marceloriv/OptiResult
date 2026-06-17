@@ -25,7 +25,7 @@ const viewTitles: Record<View, string> = {
   proyectos: "Módulo de Proyectos (Vista Gantt)",
   tablero: "Tablero Ágil",
   recursos: "Gestor de Recursos",
-  comunicacion: "Comunicación del Equipo",
+  comunicacion: "Colaboración del Equipo",
   reportes: "Módulo de Reportes",
   analiticas: "Analíticas Avanzadas",
   configuracion: "Configuración del Sistema",
@@ -35,31 +35,31 @@ function ConfiguracionView() {
   return (
     <div
       className="flex flex-col p-6 gap-6 h-full overflow-y-auto"
-      style={{ background: "#FFFFFF", fontFamily: "'Inter', sans-serif" }}
+      style={{ background: "#061673", fontFamily: "'Inter', sans-serif" }}
     >
       <div>
-        <h1 className="text-2xl font-bold text-slate-900" style={{ fontSize: 24 }}>
+        <h1 className="text-2xl font-bold text-white" style={{ fontSize: 24 }}>
           Configuración del Sistema
         </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Configura las preferencias de tu espacio de trabajo y cuenta de OptiResult.
+        <p className="text-sm text-cyan-100/70 mt-1">
+          Configura las preferencias de tu espacio de trabajo y cuenta de OptiResult para operación clínica.
         </p>
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4">
-          <h3 className="text-base font-bold text-slate-800">
+        <div className="rounded-xl p-5 border shadow-sm flex flex-col gap-4" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+          <h3 className="text-base font-bold text-white">
             Preferencias del Espacio de Trabajo
           </h3>
 
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <span className="text-sm font-semibold text-slate-800 block">
+                <span className="text-sm font-semibold text-white block">
                   Notificaciones por Email
                 </span>
-                <span className="text-xs text-slate-500">
-                  Recibe alertas semanales sobre el estado del sprint.
+                <span className="text-xs text-cyan-100/60">
+                  Recibe alertas semanales sobre el estado clínico y operativo.
                 </span>
               </div>
               <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#534AB7]" />
@@ -67,10 +67,10 @@ function ConfiguracionView() {
 
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <span className="text-sm font-semibold text-slate-800 block">
+                <span className="text-sm font-semibold text-white block">
                   Integración con canales internos
                 </span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-cyan-100/60">
                   Enviar alertas automáticas a canales vinculados.
                 </span>
               </div>
@@ -79,10 +79,10 @@ function ConfiguracionView() {
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-sm font-semibold text-slate-800 block">
+                <span className="text-sm font-semibold text-white block">
                   Auto-balancear recursos
                 </span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-cyan-100/60">
                   Sugerir reasignaciones cuando la carga supere el 90%.
                 </span>
               </div>
@@ -91,18 +91,18 @@ function ConfiguracionView() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4">
-          <h3 className="text-base font-bold text-slate-800">
+        <div className="rounded-xl p-5 border shadow-sm flex flex-col gap-4" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+          <h3 className="text-base font-bold text-white">
             Seguridad y Cumplimiento
           </h3>
 
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <span className="text-sm font-semibold text-slate-800 block">
+                <span className="text-sm font-semibold text-white block">
                   Autenticación de Dos Factores
                 </span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-cyan-100/60">
                   Protege la cuenta con un código de seguridad adicional.
                 </span>
               </div>
@@ -113,10 +113,10 @@ function ConfiguracionView() {
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-sm font-semibold text-slate-800 block">
+                <span className="text-sm font-semibold text-white block">
                   Cumplimiento normativo
                 </span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-cyan-100/60">
                   GDPR, CCPA, Ley 21.719 e ISO/IEC 25010.
                 </span>
               </div>
@@ -144,8 +144,8 @@ export default function App() {
     <div
       className="flex h-screen overflow-hidden"
       style={{
-        background: "#FFFFFF",
-        color: "#1E1B4B",
+        background: "#061673",
+        color: "#F8FAFC",
         fontFamily: "'Inter', system-ui, sans-serif",
       }}
     >
@@ -159,14 +159,14 @@ export default function App() {
         <header
           className="flex items-center justify-between px-6 py-4 shrink-0"
           style={{
-            borderBottom: "1px solid #E2E8F0",
-            background: "#FFFFFF",
+            borderBottom: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(6,22,115,0.9)",
           }}
         >
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-400">OptiResult</span>
-            <span className="text-slate-300 text-xs">/</span>
-            <span className="text-xs text-[#534AB7] font-semibold">
+            <span className="text-xs font-bold text-cyan-100/70">OptiResult</span>
+            <span className="text-cyan-100/30 text-xs">/</span>
+            <span className="text-xs text-[#79AEF2] font-semibold">
               {viewTitles[activeView]}
             </span>
           </div>
@@ -174,20 +174,20 @@ export default function App() {
           <div className="flex items-center gap-4">
             <div
               className="flex items-center gap-2 rounded-xl px-3 py-2"
-              style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}
+              style={{ background: "rgba(13,21,71,0.9)", border: "1px solid rgba(255,255,255,0.08)" }}
             >
-              <Search size={14} className="text-slate-400" />
+              <Search size={14} color="#79AEF2" />
               <input
                 placeholder="Buscar tareas, proyectos..."
-                className="bg-transparent border-none outline-none text-xs text-slate-800 placeholder-slate-400 w-48"
+                className="bg-transparent border-none outline-none text-xs text-white placeholder:text-cyan-100/40 w-48"
               />
-              <kbd className="text-[10px] text-slate-400 bg-white border border-slate-200 rounded px-1.5 py-0.5 font-sans">
+              <kbd className="text-[10px] text-cyan-100/40 bg-white/5 border border-white/10 rounded px-1.5 py-0.5 font-sans">
                 ⌘K
               </kbd>
             </div>
 
-            <button className="relative rounded-xl p-2 bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors">
-              <Bell size={16} className="text-slate-500" />
+            <button className="relative rounded-xl p-2 bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+              <Bell size={16} color="#C7D2FE" />
               {notifications > 0 && (
                 <span
                   className="absolute rounded-full flex items-center justify-center text-white"
@@ -206,7 +206,7 @@ export default function App() {
               )}
             </button>
 
-            <div className="w-px h-6 bg-slate-200" />
+            <div className="w-px h-6 bg-white/10" />
 
             <div className="flex items-center gap-2">
               <div
@@ -224,7 +224,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-hidden bg-white">
+        <main className="flex-1 overflow-hidden" style={{ background: "#061673" }}>
           {activeView === "dashboard" && <Dashboard />}
           {activeView === "proyectos" && <ProjectGantt />}
           {activeView === "tablero" && <AgileBoard />}

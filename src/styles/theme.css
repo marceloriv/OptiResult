@@ -2,9 +2,10 @@
 
 :root {
   --font-size: 14px;
-  --background: #FFFFFF;
-  --foreground: #1E1B4B; /* Deep indigo/purple black */
-  --card: #FFFFFF;
+  --background: #fbf7f7;
+
+  --foreground: #ffffff; /* Deep indigo/purple black */
+  --card: #241c4e;
   --card-foreground: #1E1B4B;
   --popover: #FFFFFF;
   --popover-foreground: #1E1B4B;
@@ -18,9 +19,9 @@
   --accent-foreground: #FFFFFF;
   
   /* Status states */
-  --success: #1D9E75;
-  --warning: #E8C53A;
-  --destructive: #D94F4F;
+  --success: #1d3b9e;
+  --warning: #e83a9d;
+  --destructive: #b44fd9;
   --destructive-foreground: #FFFFFF;
   
   --border: #E2E8F0;
@@ -34,9 +35,9 @@
   
   --chart-1: #534AB7;
   --chart-2: #EEEDFE;
-  --chart-3: #1D9E75;
-  --chart-4: #E8C53A;
-  --chart-5: #D94F4F;
+  --chart-3: #891d9e;
+  --chart-4: #663ae8;
+  --chart-5: #d94fce;
   
   --radius: 10px; /* 8-12px */
   --sidebar: #1E1B4B; /* Dark indigo sidebar for premium contrast */

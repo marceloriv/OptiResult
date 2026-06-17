@@ -18,7 +18,7 @@ const ganttTasks: GanttTask[] = [
     startWeek: 1,
     durationWeeks: 1,
     status: "Completado",
-    color: "#1D9E75", // success green
+    color: "#801d9e", // success green
     progress: 100
   },
   {
@@ -27,7 +27,7 @@ const ganttTasks: GanttTask[] = [
     startWeek: 1.5,
     durationWeeks: 1.2,
     status: "Completado",
-    color: "#1D9E75", // success green
+    color: "#801ec2", // success green
     progress: 100
   },
   {
@@ -36,7 +36,7 @@ const ganttTasks: GanttTask[] = [
     startWeek: 2,
     durationWeeks: 1.5,
     status: "En Progreso",
-    color: "#534AB7", // primary deep purple
+    color: "#d875e6", // primary deep purple
     progress: 60
   },
   {
@@ -45,7 +45,7 @@ const ganttTasks: GanttTask[] = [
     startWeek: 3,
     durationWeeks: 1,
     status: "Por Hacer",
-    color: "#E8C53A", // warning amber
+    color: "#3a3de8", // warning amber
     progress: 0
   },
   {
@@ -54,7 +54,7 @@ const ganttTasks: GanttTask[] = [
     startWeek: 3.5,
     durationWeeks: 0.8,
     status: "Por Hacer",
-    color: "#D94F4F", // alert red
+    color: "#ad4fd9", // alert red
     progress: 0
   }
 ];
@@ -70,7 +70,7 @@ export function ProjectGantt() {
   return (
     <div
       className="flex-1 flex overflow-hidden h-full"
-      style={{ background: "#FFFFFF", fontFamily: "'Inter', sans-serif" }}
+      style={{ background: "#5e19df", fontFamily: "'Inter', sans-serif" }}
     >
       {/* Gantt Timeline Area (Left) */}
       <div className="flex-1 flex flex-col p-6 overflow-y-auto gap-6">
@@ -181,7 +181,7 @@ export function ProjectGantt() {
       {/* Team Members Right Sidebar Panel */}
       <div
         className="w-[280px] border-l border-slate-100 flex flex-col p-6 gap-6 shrink-0"
-        style={{ background: "#FCFCFE" }}
+        style={{ background: "#3c2494" }}
       >
         <div>
           <h2 className="text-base font-bold text-slate-900" style={{ fontSize: 16 }}>

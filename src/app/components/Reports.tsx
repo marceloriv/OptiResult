@@ -47,7 +47,7 @@ const projectsSummary = [
     budgetUsed: "$14,200 / $15,000",
     budgetPct: 94,
     status: "Completado",
-    statusColor: "#1D9E75"
+    statusColor: "#9a1d9e"
   },
   {
     name: "Portal de Marca y Landing Page",
@@ -65,7 +65,7 @@ const projectsSummary = [
     budgetUsed: "$12,000 / $12,000",
     budgetPct: 100,
     status: "Completado",
-    statusColor: "#1D9E75"
+    statusColor: "#6a1d9e"
   }
 ];
 

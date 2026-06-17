@@ -37,12 +37,12 @@ interface Channel {
 }
 
 const channels: Channel[] = [
-  { id: "1", name: "general", type: "public", unread: 3 },
-  { id: "2", name: "proyecto-alpha", type: "public", active: true },
-  { id: "3", name: "proyecto-beta", type: "public", unread: 7 },
-  { id: "4", name: "proyecto-gamma", type: "public" },
-  { id: "5", name: "liderazgo", type: "private" },
-  { id: "6", name: "standup-diario", type: "private", unread: 1 },
+  { id: "1", name: "agendamiento-medico", type: "public", unread: 3 },
+  { id: "2", name: "portal-pacientes", type: "public", active: true },
+  { id: "3", name: "integracion-his", type: "public", unread: 7 },
+  { id: "4", name: "laboratorio-clinico", type: "public" },
+  { id: "5", name: "compliance-salud", type: "public" },
+  { id: "6", name: "qa-produccion", type: "private", unread: 1 },
 ];
 
 const directMessages = [
@@ -54,13 +54,13 @@ const directMessages = [
 
 const messages: Record<string, Message[]> = {
   "2": [
-    { id: "1", author: "Carlos López", initials: "CL", text: "Buenos días equipo! Acabo de terminar la revisión del módulo de autenticación.", time: "09:14", reactions: [{ emoji: "👍", count: 3 }] },
-    { id: "2", author: "Sara Gómez", initials: "SG", text: "Excelente Carlos! Lo revisaré esta tarde. ¿Tienes la documentación lista?", time: "09:17" },
-    { id: "3", author: "Carlos López", initials: "CL", text: "Sí, subí el README actualizado al repo. También agregué los tests de integración.", time: "09:19", reactions: [{ emoji: "🚀", count: 2 }, { emoji: "✅", count: 4 }] },
-    { id: "4", author: "Ana Martínez", initials: "AM", text: "Perfecto equipo. Recuerden que el standup es a las 10:00. El cliente espera la demo del viernes.", time: "09:45", isOwn: false },
-    { id: "5", author: "Luis Vargas", initials: "LV", text: "Ya tengo el ambiente de staging listo con los últimos cambios desplegados ✅", time: "09:52", reactions: [{ emoji: "🎉", count: 5 }] },
-    { id: "6", author: "Javier Díaz", initials: "JD", text: "Los tests de QA están corriendo. Hasta ahora 0 fallas críticas, 2 warnings menores.", time: "10:03" },
-    { id: "7", author: "Ana Martínez", initials: "AM", text: "Perfecto Javier. Una vez que termines, súbeme el reporte al Confluence.", time: "10:05", isOwn: true, status: "read" },
+    { id: "1", author: "Carlos López", initials: "CL", text: "La integración con laboratorio clínico ya quedó en staging.", time: "09:14", reactions: [{ emoji: "👍", count: 3 }] },
+    { id: "2", author: "Sara Gómez", initials: "SG", text: "Excelente. También avancé con la validación del intercambio de resultados con HIS.", time: "09:17" },
+    { id: "3", author: "Carlos López", initials: "CL", text: "Sí, dejé la documentación técnica del flujo clínico y los tests de integración listos.", time: "09:19", reactions: [{ emoji: "🚀", count: 2 }, { emoji: "✅", count: 4 }] },
+    { id: "4", author: "Ana Martínez", initials: "AM", text: "Recuerden validar permisos de acceso para rol médico y administrativo antes de la demo.", time: "09:45", isOwn: false },
+    { id: "5", author: "Luis Vargas", initials: "LV", text: "El módulo de agendamiento debe estar listo antes de la demo con la clínica.", time: "09:52", reactions: [{ emoji: "🎉", count: 5 }] },
+    { id: "6", author: "Javier Díaz", initials: "JD", text: "QA detectó 2 warnings menores en el portal de pacientes.", time: "10:03" },
+    { id: "7", author: "Ana Martínez", initials: "AM", text: "Se actualizó la documentación de cumplimiento para Ley 21.719.", time: "10:05", isOwn: true, status: "read" },
   ],
 };
 
@@ -137,12 +137,12 @@ function MessageBubble({ msg }: { msg: Message }) {
 }
 
 const activityFeed = [
-  { id: 1, text: "Ana completó tarea «Revisión de sprint»", time: "hace 10m", icon: "✅" },
-  { id: 2, text: "Carlos subió 3 archivos a Proyecto Alpha", time: "hace 25m", icon: "📎" },
-  { id: 3, text: "Reunión de retrospectiva programada para el viernes", time: "hace 1h", icon: "📅" },
-  { id: 4, text: "Sara mencionó a Luis en #proyecto-beta", time: "hace 2h", icon: "💬" },
-  { id: 5, text: "Deadline de Sprint 12 actualizado", time: "hace 3h", icon: "🔔" },
-  { id: 6, text: "Javier aprobó el PR «feat/auth-module»", time: "hace 4h", icon: "🚀" },
+  { id: 1, text: "Portal de Pacientes quedó con validación final de QA.", time: "hace 10m", icon: "✅" },
+  { id: 2, text: "Se compartió el plan de integración del HIS con la clínica privada.", time: "hace 25m", icon: "📎" },
+  { id: 3, text: "Revisión de telemedicina agendada con stakeholders clínicos.", time: "hace 1h", icon: "📅" },
+  { id: 4, text: "Se notificó una validación pendiente en laboratorio clínico.", time: "hace 2h", icon: "💬" },
+  { id: 5, text: "Deadline del comité de cumplimiento actualizado para la semana.", time: "hace 3h", icon: "🔔" },
+  { id: 6, text: "Ficha Clínica Digital recibió aprobación parcial del equipo médico.", time: "hace 4h", icon: "🚀" },
 ];
 
 export function Collaboration() {
@@ -288,7 +288,7 @@ export function Collaboration() {
                 </div>
                 <div
                   className="absolute rounded-full"
-                  style={{ width: 7, height: 7, bottom: -1, right: -1, background: dm.online ? "#22c55e" : "#4B5563", border: "1px solid var(--background)" }}
+                  style={{ width: 7, height: 7, bottom: -1, right: -1, background: dm.online ? "#c522a2" : "#5f2af1", border: "1px solid var(--background)" }}
                 />
               </div>
               <span style={{ fontSize: "0.75rem" }}>{dm.name.split(" ")[0]}</span>
@@ -307,7 +307,7 @@ export function Collaboration() {
           <div className="flex items-center gap-3">
             <Hash size={16} color="var(--muted-foreground)" />
             <span style={{ fontWeight: 600, color: "var(--foreground)", fontSize: "0.95rem" }}>
-              {activeChannelData?.name ?? "general"}
+              {activeChannelData?.name ?? "portal-pacientes"}
             </span>
             <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>
               · 6 participantes

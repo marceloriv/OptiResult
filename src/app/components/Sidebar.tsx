@@ -19,7 +19,7 @@ const navItems = [
   { id: "proyectos", label: "Proyectos", icon: FolderKanban },
   { id: "tablero", label: "Tablero Ágil", icon: KanbanSquare },
   { id: "recursos", label: "Recursos", icon: Users },
-  { id: "comunicacion", label: "Comunicación", icon: MessageSquare },
+  { id: "comunicacion", label: "Colaboración", icon: MessageSquare },
   { id: "reportes", label: "Reportes", icon: BarChart3 },
   { id: "analiticas", label: "Analíticas Avanzadas", icon: LineChart },
   { id: "configuracion", label: "Configuración", icon: Settings },
@@ -81,7 +81,7 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
                 fontWeight: 500,
               }}
             >
-              Project Management
+              Gestión Clínica
             </div>
           </div>
         )}
@@ -173,7 +173,7 @@ export function Sidebar({ activeView, onNavigate, onLogout }: SidebarProps) {
                 Ana Martínez
               </div>
               <div style={{ color: "rgba(238, 237, 254, 0.5)", fontSize: "0.68rem" }}>
-                Project Manager
+                Project Manager Salud
               </div>
             </div>
           )}
