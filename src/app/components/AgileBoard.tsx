@@ -18,21 +18,21 @@ interface Task {
 
 const initialTasks: Record<Column, Task[]> = {
   backlog: [
-    { id: "t1", title: "Diseñar arquitectura microservicios", description: "Definir contratos de API entre servicios", assignee: "Luis Vargas", initials: "LV", priority: "alta", dueDate: "20 jun", tags: ["Arquitectura"], points: 8 },
-    { id: "t2", title: "Migración base de datos legacy", description: "Migrar tablas de usuarios al nuevo esquema", assignee: "Sara Gómez", initials: "SG", priority: "media", dueDate: "25 jun", tags: ["BD", "Backend"], points: 13 },
-    { id: "t3", title: "Setup pipeline CI/CD", description: "Configurar GitHub Actions para todos los repos", assignee: "Pedro Ruiz", initials: "PR", priority: "alta", dueDate: "18 jun", tags: ["DevOps"], points: 5 },
+    { id: "t1", title: "Diseñar flujo de agendamiento médico", description: "Definir citas, confirmaciones y reprogramaciones para clínicas privadas", assignee: "Luis Vargas", initials: "LV", priority: "alta", dueDate: "20 jun", tags: ["Agendamiento"], points: 8 },
+    { id: "t2", title: "Integrar sistema de laboratorio clínico", description: "Sincronizar resultados, estados y trazabilidad con el HIS", assignee: "Sara Gómez", initials: "SG", priority: "media", dueDate: "25 jun", tags: ["Laboratorio", "HIS"], points: 13 },
+    { id: "t3", title: "Configurar pipeline CI/CD para módulo HIS", description: "Automatizar despliegues seguros con validaciones clínicas", assignee: "Pedro Ruiz", initials: "PR", priority: "alta", dueDate: "18 jun", tags: ["DevOps"], points: 5 },
   ],
   progreso: [
-    { id: "t4", title: "Módulo de autenticación OAuth2", description: "Integrar login con Google y Microsoft", assignee: "Ana Martínez", initials: "AM", priority: "alta", dueDate: "16 jun", tags: ["Auth", "Frontend"], points: 8 },
-    { id: "t5", title: "Dashboard KPIs en tiempo real", description: "Websockets para actualización de métricas", assignee: "Carlos López", initials: "CL", priority: "media", dueDate: "19 jun", tags: ["Frontend"], points: 5 },
+    { id: "t4", title: "Crear módulo de ficha clínica digital", description: "Preparar vistas clínicas seguras y trazabilidad de pacientes", assignee: "Ana Martínez", initials: "AM", priority: "alta", dueDate: "16 jun", tags: ["Ficha Clínica", "Frontend"], points: 8 },
+    { id: "t5", title: "Implementar alertas de disponibilidad de camas", description: "Mostrar capacidad operativa en tiempo real para admisiones", assignee: "Carlos López", initials: "CL", priority: "media", dueDate: "19 jun", tags: ["Operación", "Frontend"], points: 5 },
   ],
   revision: [
-    { id: "t6", title: "API REST de gestión de proyectos", description: "Endpoints CRUD para proyectos y tareas", assignee: "María Torres", initials: "MT", priority: "alta", dueDate: "15 jun", tags: ["Backend", "API"], points: 13 },
-    { id: "t7", title: "Componente tabla de recursos", description: "Tabla paginada con filtros avanzados", assignee: "Javier Díaz", initials: "JD", priority: "baja", dueDate: "17 jun", tags: ["Frontend"], points: 3 },
+    { id: "t6", title: "Validar permisos por rol médico, enfermería y admin", description: "Revisar accesos y auditoría para distintos perfiles clínicos", assignee: "María Torres", initials: "MT", priority: "alta", dueDate: "15 jun", tags: ["Seguridad", "Compliance"], points: 13 },
+    { id: "t7", title: "QA para portal de pacientes", description: "Verificar navegación, formularios y accesibilidad en escenarios reales", assignee: "Javier Díaz", initials: "JD", priority: "baja", dueDate: "17 jun", tags: ["QA"], points: 3 },
   ],
   listo: [
-    { id: "t8", title: "Diseño sistema de notificaciones", description: "Emails + push notifications completados", assignee: "Ana Martínez", initials: "AM", priority: "media", dueDate: "12 jun", tags: ["Diseño"], points: 5 },
-    { id: "t9", title: "Testing unitario módulo de pagos", description: "Cobertura 95% en todas las rutas críticas", assignee: "Luis Vargas", initials: "LV", priority: "alta", dueDate: "11 jun", tags: ["QA"], points: 8 },
+    { id: "t8", title: "Pruebas QA para portal de pacientes", description: "Ciclo final de pruebas funcionales y de regresión", assignee: "Ana Martínez", initials: "AM", priority: "media", dueDate: "12 jun", tags: ["QA"], points: 5 },
+    { id: "t9", title: "Alertas operativas para continuidad asistencial", description: "Monitoreo activo de camas, integraciones y estado de despliegue", assignee: "Luis Vargas", initials: "LV", priority: "alta", dueDate: "11 jun", tags: ["Ops"], points: 8 },
   ],
 };
 
@@ -154,7 +154,7 @@ export function AgileBoard() {
             Tablero Ágil
           </h1>
           <p style={{ color: "var(--muted-foreground)", fontSize: "0.82rem", marginTop: "0.2rem" }}>
-            Proyecto Alpha · Q2 2026
+            Programa Clínico · Q2 2026
           </p>
         </div>
         <div className="flex items-center gap-2 sm:gap-3">

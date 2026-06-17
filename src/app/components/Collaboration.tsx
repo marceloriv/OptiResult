@@ -1,266 +1,428 @@
+import { useState, useRef, useEffect } from "react";
 import {
-    Hash,
-    Lock,
-    MoreVertical,
-    Paperclip,
-    Phone,
-    Plus,
-    Search,
-    Send,
-    Smile,
-    Video,
+  Send,
+  Paperclip,
+  Smile,
+  Hash,
+  Lock,
+  Phone,
+  Video,
+  Search,
+  Plus,
+  AtSign,
+  Bell,
+  MoreHorizontal,
+  ChevronDown,
+  Check,
+  CheckCheck,
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
 
-interface Conversation {
+interface Message {
   id: string;
-  name: string;
-  lastMessage: string;
-  time: string;
-  unreadCount?: number;
+  author: string;
   initials: string;
-  avatarColor: string;
-  isPrivate?: boolean;
+  text: string;
+  time: string;
+  reactions?: { emoji: string; count: number }[];
+  isOwn?: boolean;
+  status?: "sent" | "delivered" | "read";
 }
 
-const initialConversations: Conversation[] = [
-  { id: "1", name: "Sistema Gestión Hospitalaria", lastMessage: "Ana: Revisé el PR, hay 3 comentarios...", time: "10:32", unreadCount: 3, initials: "GH", avatarColor: "#534AB7" },
-  { id: "2", name: "App Finanzas Corporativas", lastMessage: "Tú: ¿Cuándo estará lista la integración?", time: "09:15", initials: "FC", avatarColor: "#3B82F6" },
-  { id: "3", name: "Portal eLearning", lastMessage: "David: Subí los archivos al S3", time: "Ayer", initials: "EL", avatarColor: "#10B981" },
-  { id: "4", name: "General — Innovatech", lastMessage: "María: Reunión mañana a las 10am", time: "Ayer", unreadCount: 12, initials: "GI", avatarColor: "#F59E0B" },
-  { id: "5", name: "DevOps Channel", lastMessage: "Alerta: Pipeline CI/CD falló en staging", time: "Lun", unreadCount: 1, initials: "DO", avatarColor: "#D94F4F", isPrivate: true },
-  { id: "6", name: "Dashboard BI", lastMessage: "Sofía: Mockups listos para revisión", time: "Dom", initials: "DB", avatarColor: "#7F77DD" }
+interface Channel {
+  id: string;
+  name: string;
+  type: "public" | "private";
+  unread?: number;
+  active?: boolean;
+}
+
+const channels: Channel[] = [
+  { id: "1", name: "agendamiento-medico", type: "public", unread: 3 },
+  { id: "2", name: "portal-pacientes", type: "public", active: true },
+  { id: "3", name: "integracion-his", type: "public", unread: 7 },
+  { id: "4", name: "laboratorio-clinico", type: "public" },
+  { id: "5", name: "compliance-salud", type: "public" },
+  { id: "6", name: "qa-produccion", type: "private", unread: 1 },
+];
+
+const directMessages = [
+  { id: "d1", name: "Carlos López", initials: "CL", online: true },
+  { id: "d2", name: "Sara Gómez", initials: "SG", online: true },
+  { id: "d3", name: "Luis Vargas", initials: "LV", online: false },
+  { id: "d4", name: "María Torres", initials: "MT", online: false },
+];
+
+const messages: Record<string, Message[]> = {
+  "2": [
+    { id: "1", author: "Carlos López", initials: "CL", text: "La integración con laboratorio clínico ya quedó en staging.", time: "09:14", reactions: [{ emoji: "👍", count: 3 }] },
+    { id: "2", author: "Sara Gómez", initials: "SG", text: "Excelente. También avancé con la validación del intercambio de resultados con HIS.", time: "09:17" },
+    { id: "3", author: "Carlos López", initials: "CL", text: "Sí, dejé la documentación técnica del flujo clínico y los tests de integración listos.", time: "09:19", reactions: [{ emoji: "🚀", count: 2 }, { emoji: "✅", count: 4 }] },
+    { id: "4", author: "Ana Martínez", initials: "AM", text: "Recuerden validar permisos de acceso para rol médico y administrativo antes de la demo.", time: "09:45", isOwn: false },
+    { id: "5", author: "Luis Vargas", initials: "LV", text: "El módulo de agendamiento debe estar listo antes de la demo con la clínica.", time: "09:52", reactions: [{ emoji: "🎉", count: 5 }] },
+    { id: "6", author: "Javier Díaz", initials: "JD", text: "QA detectó 2 warnings menores en el portal de pacientes.", time: "10:03" },
+    { id: "7", author: "Ana Martínez", initials: "AM", text: "Se actualizó la documentación de cumplimiento para Ley 21.719.", time: "10:05", isOwn: true, status: "read" },
+  ],
+};
+
+const avatarColors = ["#4429F2", "#F272EA", "#1B65A6", "#410759", "#242CBF", "#3D25D9"];
+
+function getAvatarColor(initials: string) {
+  return avatarColors[initials.charCodeAt(0) % avatarColors.length];
+}
+
+function MessageBubble({ msg }: { msg: Message }) {
+  const avatarColor = getAvatarColor(msg.initials);
+
+  if (msg.isOwn) {
+    return (
+      <div className="flex justify-end gap-2 group">
+        <div className="flex flex-col items-end gap-1" style={{ maxWidth: "70%" }}>
+          <div
+            className="rounded-2xl rounded-tr-sm px-4 py-2.5"
+            style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+          >
+            <p style={{ fontSize: "0.82rem", lineHeight: 1.5 }}>{msg.text}</p>
+          </div>
+          <div className="flex items-center gap-1" style={{ color: "var(--muted-foreground)" }}>
+            <span style={{ fontSize: "0.65rem" }}>{msg.time}</span>
+            {msg.status === "read" ? <CheckCheck size={11} color="#79AEF2" /> : <Check size={11} />}
+          </div>
+          {msg.reactions && (
+            <div className="flex gap-1">
+              {msg.reactions.map((r) => (
+                <span key={r.emoji} className="rounded-full px-2 py-0.5 flex items-center gap-1"
+                  style={{ background: "var(--muted)", fontSize: "0.65rem", color: "var(--foreground)" }}>
+                  {r.emoji} {r.count}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-start gap-3 group">
+      <div
+        className="rounded-full flex items-center justify-center shrink-0"
+        style={{ width: 32, height: 32, background: avatarColor, fontSize: "0.7rem", fontWeight: 700, color: "#F2F2F2" }}
+      >
+        {msg.initials}
+      </div>
+      <div className="flex flex-col gap-1" style={{ maxWidth: "70%" }}>
+        <div className="flex items-baseline gap-2">
+          <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "var(--foreground)" }}>{msg.author}</span>
+          <span style={{ fontSize: "0.65rem", color: "var(--muted-foreground)" }}>{msg.time}</span>
+        </div>
+        <div
+          className="rounded-2xl rounded-tl-sm px-4 py-2.5"
+          style={{ background: "var(--card)", border: "1px solid var(--border)" }}
+        >
+          <p style={{ fontSize: "0.82rem", lineHeight: 1.5, color: "var(--foreground)" }}>{msg.text}</p>
+        </div>
+        {msg.reactions && (
+          <div className="flex gap-1">
+            {msg.reactions.map((r) => (
+              <span key={r.emoji} className="rounded-full px-2 py-0.5 flex items-center gap-1 cursor-pointer transition-colors"
+                style={{ background: "var(--muted)", fontSize: "0.65rem", color: "var(--foreground)" }}>
+                {r.emoji} {r.count}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const activityFeed = [
+  { id: 1, text: "Portal de Pacientes quedó con validación final de QA.", time: "hace 10m", icon: "✅" },
+  { id: 2, text: "Se compartió el plan de integración del HIS con la clínica privada.", time: "hace 25m", icon: "📎" },
+  { id: 3, text: "Revisión de telemedicina agendada con stakeholders clínicos.", time: "hace 1h", icon: "📅" },
+  { id: 4, text: "Se notificó una validación pendiente en laboratorio clínico.", time: "hace 2h", icon: "💬" },
+  { id: 5, text: "Deadline del comité de cumplimiento actualizado para la semana.", time: "hace 3h", icon: "🔔" },
+  { id: 6, text: "Ficha Clínica Digital recibió aprobación parcial del equipo médico.", time: "hace 4h", icon: "🚀" },
 ];
 
 export function Collaboration() {
-  const [conversations] = useState<Conversation[]>(initialConversations);
-  const [activeTab, setActiveTab] = useState("Proyectos");
-  const [text, setText] = useState("");
-  const [isMobile, setIsMobile] = useState(false);
-  const [showConversationList, setShowConversationList] = useState(true);
+  const [activeChannel, setActiveChannel] = useState("2");
+  const [input, setInput] = useState("");
+  const [chatMessages, setChatMessages] = useState(messages["2"] || []);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
 
-  const [messages, setMessages] = useState([
-    { id: 1, author: "Ana Martínez", initials: "AM", time: "09:00", text: "Buenos días equipo. Revisé el PR #42 y encontré 3 observaciones en el módulo de autenticación.", isOwn: false, avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=60" },
-    { id: 2, author: "Carlos López", initials: "CL", time: "09:15", text: "Gracias Ana, las reviso ahora. ¿Puedes detallar cuál es el error crítico?", isOwn: true, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=60" },
-    { id: 3, author: "Ana Martínez", initials: "AM", time: "09:18", text: "El problema está en la validación del token JWT. Adjunto screenshot.", isOwn: false, attachment: "jwt_token_validation.png", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=60" },
-    { id: 4, author: "Carlos López", initials: "CL", time: "09:45", text: "Entendido. Hago el fix y subo nuevo commit antes del mediodía.", isOwn: true, avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=60" },
-    { id: 5, system: true, text: "David Lee se unió a la conversación" },
-    { id: 6, author: "María Torres", initials: "MT", time: "10:20", text: "¿Alguien puede hacer el testing del fix cuando esté listo?", isOwn: false, reaction: "👍 1", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=60" },
-    { id: 7, author: "David Lee", initials: "DL", time: "10:32", text: "Yo lo hago. Tengo disponibilidad desde las 14:00.", isOwn: false, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=60" }
-  ]);
-
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!text.trim()) return;
-    const msg = {
-      id: Date.now(),
-      author: "Carlos López",
-      initials: "CL",
-      time: "Justo ahora",
-      text: text,
+  function sendMessage() {
+    if (!input.trim()) return;
+    const newMsg: Message = {
+      id: Date.now().toString(),
+      author: "Ana Martínez",
+      initials: "AM",
+      text: input.trim(),
+      time: new Date().toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" }),
       isOwn: true,
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=60"
+      status: "sent",
     };
-    setMessages(prev => [...prev, msg]);
-    setText("");
-  };
+    setChatMessages((prev) => [...prev, newMsg]);
+    setInput("");
+  }
+
+  const activeChannelData = channels.find((c) => c.id === activeChannel);
 
   return (
-    <div
-      className="flex-1 flex overflow-hidden h-full"
-      style={{ background: "#FFFFFF", fontFamily: "'Inter', sans-serif" }}
-      role="main"
-      aria-label="Colaboración y mensajes"
-    >
-      {/* Left Panel - Conversation list (320px) */}
-      <div className={`${isMobile && !showConversationList ? "hidden" : ""} w-full sm:w-[320px] border-r border-[#E5E7EB] flex flex-col shrink-0`} style={{ background: "#FCFCFE" }} role="complementary" aria-label="Lista de conversaciones">
-        {/* Messages Header */}
-        <div className="p-4 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-[#1A1A2E]" style={{ fontSize: 18 }}>Mensajes</h2>
-            <button className="p-1.5 bg-[#EEEDFE] text-[#534AB7] rounded-lg hover:bg-[#dbdaf9] transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "36px", minWidth: "36px" }} aria-label="Nueva conversación">
-              <Plus size={16} aria-hidden="true" />
-            </button>
-          </div>
-          {/* Search bar */}
-          <div className="flex items-center gap-2 rounded-lg px-3 py-1.5 bg-white border border-[#E5E7EB]">
-            <Search size={14} className="text-slate-400" aria-hidden="true" />
+    <div className="flex h-full overflow-hidden">
+      {/* Channel list */}
+      <div
+        className="flex flex-col shrink-0 overflow-y-auto"
+        style={{ width: 220, borderRight: "1px solid var(--border)", background: "rgba(6,22,115,0.3)" }}
+      >
+        {/* Search */}
+        <div className="p-3" style={{ borderBottom: "1px solid var(--border)" }}>
+          <div
+            className="flex items-center gap-2 rounded-lg px-3 py-2"
+            style={{ background: "var(--muted)" }}
+          >
+            <Search size={12} color="var(--muted-foreground)" />
             <input
-              type="text"
-              placeholder="Buscar conversaciones..."
-              className="bg-transparent border-none outline-none text-xs text-slate-800 placeholder-slate-400 w-full"
-              aria-label="Buscar conversaciones"
+              placeholder="Buscar..."
+              style={{ background: "none", border: "none", outline: "none", color: "var(--foreground)", fontSize: "0.75rem", width: "100%" }}
             />
           </div>
         </div>
 
-        {/* Tab filters */}
-        <div className="flex border-b border-slate-100 px-4 gap-4 text-xs font-bold text-slate-400 pb-2" role="tablist" aria-label="Filtros de conversaciones">
-          {["Proyectos", "Directos", "Archivados"].map(tab => (
+        {/* Channels */}
+        <div className="p-3">
+          <div className="flex items-center justify-between mb-2">
+            <span style={{ fontSize: "0.65rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+              Canales
+            </span>
+            <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
+              <Plus size={12} />
+            </button>
+          </div>
+          {channels.filter((c) => c.type === "public").map((ch) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-1 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-inset ${activeTab === tab ? "border-b-2 border-[#534AB7] text-[#534AB7]" : "hover:text-slate-600"}`}
-              style={{ minHeight: "36px" }}
-              role="tab"
-              aria-selected={activeTab === tab}
-              aria-controls={`${tab.toLowerCase()}-panel`}
+              key={ch.id}
+              onClick={() => setActiveChannel(ch.id)}
+              className="flex items-center justify-between w-full rounded-lg px-2 py-1.5 transition-colors"
+              style={{
+                background: activeChannel === ch.id ? "var(--sidebar-accent)" : "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: activeChannel === ch.id ? "var(--foreground)" : "var(--muted-foreground)",
+              }}
             >
-              {tab}
+              <div className="flex items-center gap-2">
+                <Hash size={12} />
+                <span style={{ fontSize: "0.78rem" }}>{ch.name}</span>
+              </div>
+              {ch.unread && (
+                <span
+                  className="rounded-full px-1.5"
+                  style={{ fontSize: "0.6rem", background: "var(--accent)", color: "var(--accent-foreground)", fontWeight: 700, minWidth: 16, textAlign: "center" }}
+                >
+                  {ch.unread}
+                </span>
+              )}
             </button>
           ))}
         </div>
 
-        {/* Conversation list */}
-        <div className="flex-1 overflow-y-auto flex flex-col" role="tabpanel" id="proyectos-panel">
-          {conversations.map((c) => (
+        {/* Private */}
+        <div className="p-3">
+          <div className="flex items-center justify-between mb-2">
+            <span style={{ fontSize: "0.65rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+              Privados
+            </span>
+          </div>
+          {channels.filter((c) => c.type === "private").map((ch) => (
             <button
-              key={c.id}
-              onClick={() => isMobile && setShowConversationList(false)}
-              className={`p-4 border-b border-slate-50 flex gap-3 cursor-pointer hover:bg-slate-50 transition-all text-left focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-inset ${c.id === "1" ? "bg-[#EEEDFE]/30 border-l-4 border-[#534AB7]" : ""}`}
-              style={{ minHeight: "72px" }}
-              aria-label={`${c.name}, último mensaje: ${c.lastMessage}`}
-              aria-current={c.id === "1" ? "true" : undefined}
+              key={ch.id}
+              onClick={() => setActiveChannel(ch.id)}
+              className="flex items-center justify-between w-full rounded-lg px-2 py-1.5 transition-colors"
+              style={{
+                background: activeChannel === ch.id ? "var(--sidebar-accent)" : "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: activeChannel === ch.id ? "var(--foreground)" : "var(--muted-foreground)",
+              }}
             >
-              {/* Initials Avatar */}
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white shrink-0 text-xs shadow-xs"
-                style={{ backgroundColor: c.avatarColor }}
-                aria-hidden="true"
-              >
-                {c.initials}
+              <div className="flex items-center gap-2">
+                <Lock size={11} />
+                <span style={{ fontSize: "0.78rem" }}>{ch.name}</span>
               </div>
+              {ch.unread && (
+                <span
+                  className="rounded-full px-1.5"
+                  style={{ fontSize: "0.6rem", background: "var(--accent)", color: "var(--accent-foreground)", fontWeight: 700 }}
+                >
+                  {ch.unread}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
 
-              {/* Text content */}
-              <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-bold text-slate-800 flex items-center gap-1 truncate">
-                    {c.isPrivate ? <Lock size={10} className="text-slate-400 shrink-0" aria-hidden="true" /> : <Hash size={10} className="text-slate-400 shrink-0" aria-hidden="true" />}
-                    {c.name}
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-semibold">{c.time}</span>
+        {/* DMs */}
+        <div className="p-3">
+          <div className="flex items-center justify-between mb-2">
+            <span style={{ fontSize: "0.65rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 600 }}>
+              Mensajes directos
+            </span>
+          </div>
+          {directMessages.map((dm) => (
+            <button
+              key={dm.id}
+              className="flex items-center gap-2 w-full rounded-lg px-2 py-1.5 transition-colors"
+              style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--muted-foreground)" }}
+            >
+              <div className="relative shrink-0">
+                <div
+                  className="rounded-full flex items-center justify-center"
+                  style={{ width: 22, height: 22, background: getAvatarColor(dm.initials), fontSize: "0.55rem", fontWeight: 700, color: "#F2F2F2" }}
+                >
+                  {dm.initials}
                 </div>
-                <div className="flex justify-between items-center gap-1.5">
-                  <p className="text-[11px] text-slate-400 font-medium truncate">{c.lastMessage}</p>
-                  {c.unreadCount && (
-                    <span
-                      className="text-[9px] font-extrabold text-white px-1.5 py-0.5 rounded-full shrink-0"
-                      style={{ backgroundColor: c.id === "5" ? "#D94F4F" : "#534AB7" }}
-                      aria-label={`${c.unreadCount} mensajes no leídos`}
-                    >
-                      {c.unreadCount}
-                    </span>
-                  )}
-                </div>
+                <div
+                  className="absolute rounded-full"
+                  style={{ width: 7, height: 7, bottom: -1, right: -1, background: dm.online ? "#c522a2" : "#5f2af1", border: "1px solid var(--background)" }}
+                />
               </div>
+              <span style={{ fontSize: "0.75rem" }}>{dm.name.split(" ")[0]}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Right Panel - Chat Area */}
-      <div className={`${isMobile && showConversationList ? "hidden" : ""} flex-1 flex flex-col overflow-hidden bg-white`} role="region" aria-label="Área de chat">
-        {/* Chat top bar */}
-        <div className="px-4 sm:px-6 py-3 border-b border-[#E5E7EB] flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            {isMobile && (
-              <button onClick={() => setShowConversationList(true)} className="p-1 text-slate-400 hover:text-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7]" aria-label="Volver a conversaciones">
-                <Hash size={16} />
-              </button>
-            )}
-            <div className="w-8 h-8 rounded-full bg-[#534AB7] text-white flex items-center justify-center font-bold text-xs" aria-hidden="true">
-              GH
-            </div>
-            <div>
-              <h3 className="text-xs font-bold text-slate-800">Sistema Gestión Hospitalaria</h3>
-              <span className="text-[10px] text-slate-400 font-medium">8 miembros</span>
-            </div>
+      {/* Chat area */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Chat header */}
+        <div
+          className="flex items-center justify-between px-5 py-3 shrink-0"
+          style={{ borderBottom: "1px solid var(--border)" }}
+        >
+          <div className="flex items-center gap-3">
+            <Hash size={16} color="var(--muted-foreground)" />
+            <span style={{ fontWeight: 600, color: "var(--foreground)", fontSize: "0.95rem" }}>
+              {activeChannelData?.name ?? "portal-pacientes"}
+            </span>
+            <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>
+              · 6 participantes
+            </span>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3 text-slate-400">
-            <button className="hover:text-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "32px", minWidth: "32px" }} aria-label="Videollamada"><Video size={16} aria-hidden="true" /></button>
-            <button className="hover:text-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "32px", minWidth: "32px" }} aria-label="Llamada"><Phone size={16} aria-hidden="true" /></button>
-            <button className="hover:text-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "32px", minWidth: "32px" }} aria-label="Buscar en chat"><Search size={16} aria-hidden="true" /></button>
-            <button className="hover:text-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "32px", minWidth: "32px" }} aria-label="Más opciones"><MoreVertical size={16} aria-hidden="true" /></button>
+          <div className="flex items-center gap-3">
+            <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
+              <Phone size={16} />
+            </button>
+            <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
+              <Video size={16} />
+            </button>
+            <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
+              <Bell size={16} />
+            </button>
+            <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
+              <Search size={16} />
+            </button>
           </div>
         </div>
 
-        {/* Message Thread */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col gap-4" role="log" aria-live="polite" aria-label="Mensajes de la conversación">
-          {messages.map((m) => {
-            if (m.system) {
-              return (
-                <div key={m.id} className="flex justify-center my-2">
-                  <span className="bg-slate-100 text-slate-500 text-[10px] font-bold px-3 py-1 rounded-full shadow-xs" role="status">
-                    {m.text}
-                  </span>
-                </div>
-              );
-            }
-
-            return (
-              <div key={m.id} className={`flex gap-3 items-start ${m.isOwn ? "justify-end" : ""}`}>
-                {!m.isOwn && (
-                  <img src={m.avatar} alt="" className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5 border" aria-hidden="true" />
-                )}
-                <div className="flex flex-col gap-1 max-w-[85%] sm:max-w-[70%]">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold text-slate-700">{m.author}</span>
-                    <span className="text-[9px] text-slate-400">{m.time}</span>
-                  </div>
-                  <div
-                    className={`rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${m.isOwn ? "bg-[#534AB7] text-white rounded-tr-none" : "bg-slate-100 text-slate-700 rounded-tl-none"}`}
-                  >
-                    <p>{m.text}</p>
-                    {m.attachment && (
-                      <div className="mt-2.5 p-2 bg-white/10 rounded-lg border border-white/20 flex items-center gap-2">
-                        <span className="text-base" aria-hidden="true">🖼️</span>
-                        <span className="text-[10px] underline font-bold cursor-pointer">{m.attachment}</span>
-                      </div>
-                    )}
-                  </div>
-                  {m.reaction && (
-                    <span className="self-start text-[9px] font-bold bg-slate-100 px-2 py-0.5 rounded-full mt-1 border border-slate-200 text-slate-500" aria-label={`Reacción: ${m.reaction}`}>
-                      {m.reaction}
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom Input Bar */}
-        <form onSubmit={handleSendMessage} className="p-4 border-t border-[#E5E7EB] flex items-center gap-2 sm:gap-3">
-          <button type="button" className="text-slate-400 hover:text-[#534AB7] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "40px", minWidth: "40px" }} aria-label="Adjuntar archivo">
-            <Paperclip size={18} aria-hidden="true" />
-          </button>
-          <button type="button" className="text-slate-400 hover:text-[#534AB7] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "40px", minWidth: "40px" }} aria-label="Agregar emoji">
-            <Smile size={18} aria-hidden="true" />
-          </button>
-          <input
-            type="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Escribe un mensaje..."
-            className="flex-1 bg-[#F8F7FF] border border-[#E5E7EB] rounded-xl px-4 py-2.5 text-xs outline-none focus:border-[#534AB7] focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2 text-slate-800"
-            aria-label="Escribe un mensaje"
-          />
-          <button
-            type="submit"
-            className="bg-[#534AB7] hover:bg-[#4339A6] text-white p-2.5 rounded-xl transition-all cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
-            style={{ minHeight: "40px", minWidth: "40px" }}
-            aria-label="Enviar mensaje"
+        {/* Messages */}
+        <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
+          <div
+            className="rounded-lg px-4 py-2 text-center"
+            style={{ background: "var(--muted)", alignSelf: "center" }}
           >
-            <Send size={16} aria-hidden="true" />
-          </button>
-        </form>
+            <span style={{ fontSize: "0.7rem", color: "var(--muted-foreground)" }}>Hoy — 14 de junio 2026</span>
+          </div>
+          {chatMessages.map((msg) => (
+            <MessageBubble key={msg.id} msg={msg} />
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {/* Input */}
+        <div className="px-5 pb-5 shrink-0">
+          <div
+            className="flex items-center gap-3 rounded-xl px-4 py-3"
+            style={{ background: "var(--card)", border: "1px solid var(--border)" }}
+          >
+            <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
+              <Paperclip size={16} />
+            </button>
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+              placeholder={`Mensaje en #${activeChannelData?.name ?? "general"}...`}
+              className="flex-1"
+              style={{ background: "none", border: "none", outline: "none", color: "var(--foreground)", fontSize: "0.85rem" }}
+            />
+            <div className="flex items-center gap-2">
+              <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
+                <AtSign size={15} />
+              </button>
+              <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
+                <Smile size={15} />
+              </button>
+              <button
+                onClick={sendMessage}
+                className="rounded-lg p-1.5 transition-colors"
+                style={{ background: input.trim() ? "var(--primary)" : "var(--muted)", border: "none", cursor: "pointer" }}
+              >
+                <Send size={14} color={input.trim() ? "#F2F2F2" : "var(--muted-foreground)"} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Activity panel */}
+      <div
+        className="shrink-0 flex flex-col overflow-hidden"
+        style={{ width: 240, borderLeft: "1px solid var(--border)" }}
+      >
+        <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
+          <span style={{ fontSize: "0.82rem", fontWeight: 600, color: "var(--foreground)" }}>
+            Actividad del Equipo
+          </span>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+          {activityFeed.map((item) => (
+            <div key={item.id} className="flex items-start gap-3">
+              <span style={{ fontSize: "1rem" }}>{item.icon}</span>
+              <div>
+                <p style={{ fontSize: "0.75rem", color: "var(--foreground)", lineHeight: 1.4 }}>{item.text}</p>
+                <p style={{ fontSize: "0.65rem", color: "var(--muted-foreground)", marginTop: "0.2rem" }}>{item.time}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Online members */}
+        <div style={{ borderTop: "1px solid var(--border)", padding: "1rem" }}>
+          <span style={{ fontSize: "0.68rem", color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 600 }}>
+            En línea — {directMessages.filter((d) => d.online).length}
+          </span>
+          <div className="flex flex-col gap-2 mt-3">
+            {directMessages.filter((d) => d.online).map((dm) => (
+              <div key={dm.id} className="flex items-center gap-2">
+                <div className="relative">
+                  <div
+                    className="rounded-full flex items-center justify-center"
+                    style={{ width: 24, height: 24, background: getAvatarColor(dm.initials), fontSize: "0.58rem", fontWeight: 700, color: "#F2F2F2" }}
+                  >
+                    {dm.initials}
+                  </div>
+                  <div className="absolute rounded-full" style={{ width: 7, height: 7, bottom: -1, right: -1, background: "#22c55e", border: "1px solid var(--background)" }} />
+                </div>
+                <span style={{ fontSize: "0.75rem", color: "var(--foreground)" }}>{dm.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

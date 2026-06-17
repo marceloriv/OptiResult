@@ -1,98 +1,98 @@
-import { useEffect, useState } from "react";
 import {
-    AlertTriangle,
-    Brain,
-    CheckCircle2,
-    Clock,
-    Lightbulb,
-    LineChart as LineChartIcon,
-    TrendingUp,
-    Users,
+  AlertTriangle,
+  Brain,
+  CheckCircle2,
+  Clock,
+  Lightbulb,
+  LineChart as LineChartIcon,
+  PiggyBankIcon,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 import {
-    Area,
-    AreaChart,
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 
 const efficiencyData = [
-  { week: "Sem 1", eficiencia: 72, riesgo: 46 },
-  { week: "Sem 2", eficiencia: 76, riesgo: 42 },
-  { week: "Sem 3", eficiencia: 81, riesgo: 35 },
-  { week: "Sem 4", eficiencia: 84, riesgo: 29 },
+  { week: "Sem 1", disponibilidad: 72, riesgo: 46 },
+  { week: "Sem 2", disponibilidad: 76, riesgo: 42 },
+  { week: "Sem 3", disponibilidad: 81, riesgo: 35 },
+  { week: "Sem 4", disponibilidad: 84, riesgo: 29 },
 ];
 
 const projectRiskData = [
-  { name: "Health Platform", riesgo: 78 },
-  { name: "Financial App", riesgo: 54 },
-  { name: "Learning Platform", riesgo: 72 },
-  { name: "EduCloud", riesgo: 28 },
+  { name: "Portal de Pacientes", riesgo: 78 },
+  { name: "Integración HIS", riesgo: 54 },
+  { name: "Telemedicina", riesgo: 72 },
+  { name: "Laboratorio Clínico", riesgo: 28 },
 ];
 
 const workloadData = [
-  { team: "Backend", carga: 82 },
-  { team: "Frontend", carga: 76 },
-  { team: "QA", carga: 95 },
+  { team: "QA Healthcare", carga: 82 },
+  { team: "Integración HIS", carga: 76 },
+  { team: "Clínica TI", carga: 95 },
   { team: "DevOps", carga: 88 },
-  { team: "UX/UI", carga: 61 },
+  { team: "Frontend Salud", carga: 61 },
 ];
 
 const alerts = [
   {
-    title: "Proyecto Health Platform con riesgo alto",
-    description: "Presenta 3 tareas críticas bloqueadas hace más de 5 días.",
+    title: "Portal de Pacientes presenta riesgo alto",
+    description: "Tiene pruebas QA pendientes y una dependencia crítica por cerrar.",
     level: "Crítico",
   },
   {
-    title: "Equipo QA sobrecargado",
-    description: "La carga semanal llegó al 95%, superando el umbral recomendado.",
+    title: "Integración HIS pendiente de validación externa",
+    description: "El proveedor aún no confirma la ventana de validación final.",
     level: "Alto",
   },
   {
-    title: "Sprint actual bajo lo esperado",
-    description: "El avance está 18% por debajo de la planificación inicial.",
+    title: "Telemedicina con requisitos funcionales abiertos",
+    description: "Persisten pendientes clínicos que afectan la demo con stakeholders.",
     level: "Medio",
   },
 ];
 
 const recommendations = [
-  "Redistribuir 2 tareas del equipo QA hacia Backend.",
-  "Priorizar tareas bloqueadas del proyecto Health Platform.",
-  "Asignar recursos subutilizados al proyecto Learning Platform.",
-  "Programar reunión de seguimiento para proyectos con avance menor al 70%.",
+  "Redistribuir pruebas QA hacia Portal de Pacientes.",
+  "Priorizar validación de Integración HIS.",
+  "Agendar reunión con stakeholders clínicos para Telemedicina.",
+  "Mantener monitoreo de disponibilidad en módulos críticos.",
 ];
 
 const projectTable = [
   {
-    project: "Health Platform",
+    project: "Portal de Pacientes",
     progress: "62%",
     risk: "Alto",
     cause: "QA sobrecargado",
-    action: "Redistribuir tareas",
+    action: "Redistribuir pruebas",
   },
   {
-    project: "Financial App",
+    project: "Integración HIS",
     progress: "74%",
     risk: "Medio",
-    cause: "Tareas bloqueadas",
-    action: "Priorizar revisión",
+    cause: "Dependencia externa",
+    action: "Priorizar validación",
   },
   {
-    project: "Learning Platform",
+    project: "Telemedicina",
     progress: "58%",
     risk: "Alto",
-    cause: "Comunicación deficiente",
-    action: "Reunión de seguimiento",
+    cause: "Requisitos pendientes",
+    action: "Reunión con stakeholders",
   },
   {
-    project: "EduCloud",
+    project: "Laboratorio Clínico",
     progress: "81%",
     risk: "Bajo",
     cause: "Sin alertas críticas",
@@ -115,32 +115,35 @@ function KpiCard({
 }) {
   const colors = {
     purple: { bg: "#EEEDFE", text: "#534AB7" },
-    red: { bg: "#FEE2E2", text: "#B91C1C" },
-    green: { bg: "#DCFCE7", text: "#15803D" },
-    orange: { bg: "#FFEDD5", text: "#C2410C" },
+    red: { bg: "#FEE2E2", text: "#b52bdf" },
+    green: { bg: "#DCFCE7", text: "#201580" },
+    orange: { bg: "#FFEDD5", text: "#c20c9b" },
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-start justify-between">
-      <div>
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">
-          {title}
-        </p>
-        <h3 className="text-3xl font-extrabold text-slate-900 mt-2">{value}</h3>
-        <p className="text-xs text-slate-500 mt-1">{description}</p>
-      </div>
-
       <div
-        className="rounded-xl flex items-center justify-center"
-        style={{
-          width: 42,
-          height: 42,
-          background: colors[tone].bg,
-          color: colors[tone].text,
-        }}
+        className="rounded-2xl border border-white/10 shadow-sm p-5 flex items-start justify-between"
+        style={{ background: "rgba(13,21,71,0.95)" }}
       >
-        <Icon size={20} />
-      </div>
+        <div>
+          <p className="text-xs font-bold text-cyan-100/55 uppercase tracking-wide">
+            {title}
+          </p>
+          <h3 className="text-3xl font-extrabold text-white mt-2">{value}</h3>
+          <p className="text-xs text-cyan-100/65 mt-1">{description}</p>
+        </div>
+
+        <div
+          className="rounded-xl flex items-center justify-center"
+          style={{
+            width: 42,
+            height: 42,
+            background: colors[tone].bg,
+            color: colors[tone].text,
+          }}
+        >
+          <Icon size={20} />
+        </div>
     </div>
   );
 }
@@ -148,10 +151,10 @@ function KpiCard({
 function RiskBadge({ risk }: { risk: string }) {
   const styles =
     risk === "Alto"
-      ? "bg-red-100 text-red-700"
+        ? "bg-red-500/15 text-[#FFB4B4]"
       : risk === "Medio"
-      ? "bg-orange-100 text-orange-700"
-      : "bg-green-100 text-green-700";
+        ? "bg-orange-500/15 text-[#FDBA74]"
+        : "bg-green-500/15 text-[#86EFAC]";
 
   return (
     <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${styles}`}>
@@ -161,83 +164,72 @@ function RiskBadge({ risk }: { risk: string }) {
 }
 
 export function AdvancedAnalytics() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   return (
     <div
-      className="h-full overflow-y-auto p-4 sm:p-6 flex flex-col gap-4 sm:gap-6"
-      style={{ background: "#F8FAFC", fontFamily: "'Inter', sans-serif" }}
-      role="main"
-      aria-label="Analíticas avanzadas"
+      className="h-full overflow-y-auto p-6 flex flex-col gap-6"
+      style={{ background: "#061673", fontFamily: "'Inter', sans-serif" }}
     >
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <Brain size={24} className="text-[#534AB7]" aria-hidden="true" />
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+            <Brain size={24} className="text-[#534AB7]" />
+            <h1 className="text-2xl font-extrabold text-white">
               Analíticas Avanzadas
             </h1>
           </div>
-          <p className="text-sm text-slate-500 mt-1">
-            Predicción, tendencias, alertas inteligentes y recomendaciones para la toma de decisiones en OptiResult.
+          <p className="text-sm text-cyan-100/70 mt-1">
+            Predicción, tendencias, alertas inteligentes y recomendaciones para la toma de decisiones en clínicas y hospitales privados.
           </p>
         </div>
 
-        <button className="bg-[#534AB7] text-white rounded-xl px-4 py-2 text-sm font-bold shadow-sm hover:opacity-90 transition-all focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2" style={{ minHeight: "40px" }} aria-label="Generar informe predictivo">
+        <button className="bg-[#534AB7] text-white rounded-xl px-4 py-2 text-sm font-bold shadow-sm hover:opacity-90 transition-all">
           Generar informe predictivo
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <KpiCard
-          title="Riesgo global"
+          title="Riesgo de retraso"
           value="68%"
-          description="Probabilidad de retraso si no se redistribuyen recursos."
+          description="Probabilidad de retraso en módulos críticos clínicos."
           icon={AlertTriangle}
-          tone="red"
+        tone="red"
         />
         <KpiCard
-          title="Proyectos en riesgo"
+          title="Disponibilidad operativa"
           value="4"
-          description="Proyectos con desviaciones relevantes."
+          description="Proyección de continuidad operativa para la semana."
           icon={Clock}
           tone="orange"
         />
         <KpiCard
-          title="Eficiencia proyectada"
+          title="Impacto clínico alto"
           value="84%"
-          description="Tendencia estimada para el cierre del mes."
+          description="Proyectos con mayor efecto sobre la atención privada."
           icon={TrendingUp}
           tone="green"
         />
         <KpiCard
-          title="Recursos críticos"
+          title="Cumplimiento SLA"
           value="6"
-          description="Miembros con carga mayor al 90%."
+          description="Nivel de cumplimiento esperado en módulos clave."
           icon={Users}
           tone="purple"
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="col-span-1 lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-2 rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-base font-bold text-slate-900">
-                Tendencia de eficiencia y riesgo
+              <h2 className="text-base font-bold text-white">
+                Disponibilidad operativa y riesgo
               </h2>
-              <p className="text-xs text-slate-500">
-                Evolución semanal de la eficiencia global y disminución del riesgo.
+              <p className="text-xs text-cyan-100/60">
+                Evolución semanal de la disponibilidad operativa y del riesgo en módulos críticos.
               </p>
             </div>
-            <LineChartIcon size={20} className="text-[#534AB7]" aria-hidden="true" />
+            <LineChartIcon size={20} className="text-[#534AB7]" />
           </div>
 
           <div style={{ width: "100%", height: 280 }}>
@@ -247,18 +239,11 @@ export function AdvancedAnalytics() {
                 <XAxis dataKey="week" stroke="#64748B" fontSize={12} />
                 <YAxis stroke="#64748B" fontSize={12} />
                 <Tooltip />
-                <Area
-                  type="monotone"
-                  dataKey="eficiencia"
-                  stroke="#534AB7"
-                  fill="#EEEDFE"
-                  strokeWidth={3}
-                  name="Eficiencia"
-                />
+                <Area type="monotone" dataKey="disponibilidad" stroke="#79AEF2" fill="#EEEDFE" strokeWidth={3} name="Disponibilidad" />
                 <Area
                   type="monotone"
                   dataKey="riesgo"
-                  stroke="#D94F4F"
+                  stroke="#7f4fd9"
                   fill="#FEE2E2"
                   strokeWidth={3}
                   name="Riesgo"
@@ -268,10 +253,10 @@ export function AdvancedAnalytics() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+        <div className="rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
           <div className="flex items-center gap-2 mb-4">
-            <AlertTriangle size={18} className="text-red-600" aria-hidden="true" />
-            <h2 className="text-base font-bold text-slate-900">
+            <AlertTriangle size={18} className="text-red-600" />
+            <h2 className="text-base font-bold text-white">
               Alertas inteligentes
             </h2>
           </div>
@@ -280,27 +265,28 @@ export function AdvancedAnalytics() {
             {alerts.map((alert) => (
               <div
                 key={alert.title}
-                className="rounded-xl border border-slate-200 p-3 bg-slate-50"
+                className="rounded-xl border p-3"
+                style={{ borderColor: "rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.04)" }}
               >
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="text-sm font-bold text-slate-800">{alert.title}</h3>
-                  <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-1 rounded-full">
+                  <h3 className="text-sm font-bold text-white">{alert.title}</h3>
+                  <span className="text-[10px] font-bold bg-red-500/15 text-[#FFB4B4] px-2 py-1 rounded-full">
                     {alert.level}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">{alert.description}</p>
+                <p className="text-xs text-cyan-100/60 mt-1">{alert.description}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
-          <h2 className="text-base font-bold text-slate-900 mb-1">
+      <div className="grid grid-cols-2 gap-6">
+        <div className="rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+          <h2 className="text-base font-bold text-white mb-1">
             Riesgo predictivo por proyecto
           </h2>
-          <p className="text-xs text-slate-500 mb-4">
+          <p className="text-xs text-cyan-100/60 mb-4">
             Porcentaje estimado de desviación según avance, bloqueos y carga del equipo.
           </p>
 
@@ -315,7 +301,7 @@ export function AdvancedAnalytics() {
                   {projectRiskData.map((entry) => (
                     <Cell
                       key={entry.name}
-                      fill={entry.riesgo >= 70 ? "#D94F4F" : entry.riesgo >= 50 ? "#F59E0B" : "#22C55E"}
+                      fill={entry.riesgo >= 70 ? "#b94fd9" : entry.riesgo >= 50 ? "#f50be2" : "#6e22c5"}
                     />
                   ))}
                 </Bar>
@@ -324,12 +310,12 @@ export function AdvancedAnalytics() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
-          <h2 className="text-base font-bold text-slate-900 mb-1">
-            Carga laboral por equipo
+        <div className="rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+          <h2 className="text-base font-bold text-white mb-1">
+            Recursos críticos por área
           </h2>
-          <p className="text-xs text-slate-500 mb-4">
-            Permite detectar recursos sobrecargados o subutilizados.
+          <p className="text-xs text-cyan-100/60 mb-4">
+            Permite detectar recursos sobrecargados o subutilizados por frente de trabajo.
           </p>
 
           <div style={{ width: "100%", height: 250 }}>
@@ -343,7 +329,7 @@ export function AdvancedAnalytics() {
                   {workloadData.map((entry) => (
                     <Cell
                       key={entry.team}
-                      fill={entry.carga >= 90 ? "#D94F4F" : entry.carga >= 80 ? "#F59E0B" : "#534AB7"}
+                      fill={entry.carga >= 90 ? "#ad4fd9" : entry.carga >= 80 ? "#f50be9" : "#534AB7"}
                     />
                   ))}
                 </Bar>
@@ -353,11 +339,11 @@ export function AdvancedAnalytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="col-span-1 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-1 rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
           <div className="flex items-center gap-2 mb-4">
-            <Lightbulb size={18} className="text-[#534AB7]" aria-hidden="true" />
-            <h2 className="text-base font-bold text-slate-900">
+            <Lightbulb size={18} className="text-[#534AB7]" />
+            <h2 className="text-base font-bold text-white">
               Recomendaciones del sistema
             </h2>
           </div>
@@ -365,49 +351,49 @@ export function AdvancedAnalytics() {
           <div className="flex flex-col gap-3">
             {recommendations.map((item) => (
               <div key={item} className="flex gap-2">
-                <CheckCircle2 size={16} className="text-green-600 shrink-0 mt-0.5" aria-hidden="true" />
-                <p className="text-sm text-slate-600">{item}</p>
+                <CheckCircle2 size={16} className="text-green-600 shrink-0 mt-0.5" />
+                <p className="text-sm text-cyan-100/70">{item}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="col-span-1 lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-5">
-          <h2 className="text-base font-bold text-slate-900 mb-1">
-            Matriz de proyectos con riesgo
+        <div className="col-span-2 rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+          <h2 className="text-base font-bold text-white mb-1">
+            Matriz de riesgos clínicos
           </h2>
-          <p className="text-xs text-slate-500 mb-4">
-            Vista ejecutiva para priorizar acciones correctivas.
+          <p className="text-xs text-cyan-100/60 mb-4">
+            Vista ejecutiva para priorizar acciones correctivas en la operación salud.
           </p>
 
-          <div className="overflow-x-auto rounded-xl border border-slate-200" role="region" aria-label="Tabla de proyectos con riesgo" tabIndex={0}>
-          <table className="w-full text-sm" role="table">
-            <thead className="bg-slate-50 text-slate-500">
-              <tr>
-                <th className="text-left px-4 py-3 font-bold" scope="col">Proyecto</th>
-                <th className="text-left px-4 py-3 font-bold" scope="col">Avance</th>
-                <th className="text-left px-4 py-3 font-bold" scope="col">Riesgo</th>
-                <th className="text-left px-4 py-3 font-bold hidden sm:table-cell" scope="col">Causa</th>
-                <th className="text-left px-4 py-3 font-bold hidden sm:table-cell" scope="col">Acción sugerida</th>
-              </tr>
-            </thead>
-              <tbody className="divide-y divide-slate-100">
+          <div className="overflow-hidden rounded-xl border" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+            <table className="w-full text-sm">
+              <thead className="text-cyan-100/60" style={{ background: "rgba(255,255,255,0.04)" }}>
+                <tr>
+                  <th className="text-left px-4 py-3 font-bold">Proyecto</th>
+                  <th className="text-left px-4 py-3 font-bold">Avance</th>
+                  <th className="text-left px-4 py-3 font-bold">Riesgo</th>
+                  <th className="text-left px-4 py-3 font-bold">Causa</th>
+                  <th className="text-left px-4 py-3 font-bold">Acción sugerida</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
                 {projectTable.map((row) => (
-                  <tr key={row.project} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-bold text-slate-800">{row.project}</td>
-                    <td className="px-4 py-3 text-slate-600">{row.progress}</td>
+                  <tr key={row.project} className="hover:bg-white/5">
+                    <td className="px-4 py-3 font-bold text-white">{row.project}</td>
+                    <td className="px-4 py-3 text-cyan-100/70">{row.progress}</td>
                     <td className="px-4 py-3">
                       <RiskBadge risk={row.risk} />
                     </td>
-                    <td className="px-4 py-3 text-slate-600 hidden sm:table-cell">{row.cause}</td>
-                    <td className="px-4 py-3 text-[#534AB7] font-semibold hidden sm:table-cell">
+                    <td className="px-4 py-3 text-cyan-100/70">{row.cause}</td>
+                    <td className="px-4 py-3 text-[#79AEF2] font-semibold">
                       {row.action}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            </div>
+          </div>
         </div>
       </div>
     </div>

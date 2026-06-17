@@ -1,14 +1,14 @@
-import { Bell, Menu, Search, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { AdvancedAnalytics } from "./components/AdvancedAnalytics";
-import { AgileBoard } from "./components/AgileBoard";
-import { Collaboration } from "./components/Collaboration";
+import { useState } from "react";
+import { Sidebar } from "./components/Sidebar";
 import { Dashboard } from "./components/Dashboard";
-import { Login } from "./components/Login";
+import { ResourceManagement } from "./components/ResourceManagement";
 import { ProjectGantt } from "./components/ProjectGantt";
 import { Reports } from "./components/Reports";
-import { ResourceManagement } from "./components/ResourceManagement";
-import { Sidebar } from "./components/Sidebar";
+import { Collaboration } from "./components/Collaboration";
+import { Login } from "./components/Login";
+import { AgileBoard } from "./components/AgileBoard";
+import { AdvancedAnalytics } from "./components/AdvancedAnalytics";
+import { Bell, Search } from "lucide-react";
 
 type View =
   | "dashboard"
@@ -25,7 +25,7 @@ const viewTitles: Record<View, string> = {
   proyectos: "Módulo de Proyectos (Vista Gantt)",
   tablero: "Tablero Ágil",
   recursos: "Gestor de Recursos",
-  comunicacion: "Comunicación del Equipo",
+  comunicacion: "Colaboración del Equipo",
   reportes: "Módulo de Reportes",
   analiticas: "Analíticas Avanzadas",
   configuracion: "Configuración del Sistema",
@@ -35,74 +35,74 @@ function ConfiguracionView() {
   return (
     <div
       className="flex flex-col p-6 gap-6 h-full overflow-y-auto"
-      style={{ background: "#FFFFFF", fontFamily: "'Inter', sans-serif" }}
+      style={{ background: "#061673", fontFamily: "'Inter', sans-serif" }}
     >
       <div>
-        <h1 className="text-2xl font-bold text-slate-900" style={{ fontSize: 24 }}>
+        <h1 className="text-2xl font-bold text-white" style={{ fontSize: 24 }}>
           Configuración del Sistema
         </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Configura las preferencias de tu espacio de trabajo y cuenta de OptiResult.
+        <p className="text-sm text-cyan-100/70 mt-1">
+          Configura las preferencias de tu espacio de trabajo y cuenta de OptiResult para operación clínica.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4">
-          <h3 className="text-base font-bold text-slate-800">
+      <div className="grid grid-cols-2 gap-6">
+        <div className="rounded-xl p-5 border shadow-sm flex flex-col gap-4" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+          <h3 className="text-base font-bold text-white">
             Preferencias del Espacio de Trabajo
           </h3>
 
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <label htmlFor="email-notifications" className="text-sm font-semibold text-slate-800 block cursor-pointer">
+                <span className="text-sm font-semibold text-white block">
                   Notificaciones por Email
-                </label>
-                <span id="email-notifications-desc" className="text-xs text-slate-500">
-                  Recibe alertas semanales sobre el estado del sprint.
+                </span>
+                <span className="text-xs text-cyan-100/60">
+                  Recibe alertas semanales sobre el estado clínico y operativo.
                 </span>
               </div>
-              <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#534AB7]" id="email-notifications" aria-describedby="email-notifications-desc" />
+              <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#534AB7]" />
             </div>
 
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <label htmlFor="channel-integration" className="text-sm font-semibold text-slate-800 block cursor-pointer">
+                <span className="text-sm font-semibold text-white block">
                   Integración con canales internos
-                </label>
-                <span id="channel-integration-desc" className="text-xs text-slate-500">
+                </span>
+                <span className="text-xs text-cyan-100/60">
                   Enviar alertas automáticas a canales vinculados.
                 </span>
               </div>
-              <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#534AB7]" id="channel-integration" aria-describedby="channel-integration-desc" />
+              <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#534AB7]" />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <label htmlFor="auto-balance" className="text-sm font-semibold text-slate-800 block cursor-pointer">
+                <span className="text-sm font-semibold text-white block">
                   Auto-balancear recursos
-                </label>
-                <span id="auto-balance-desc" className="text-xs text-slate-500">
+                </span>
+                <span className="text-xs text-cyan-100/60">
                   Sugerir reasignaciones cuando la carga supere el 90%.
                 </span>
               </div>
-              <input type="checkbox" className="w-4 h-4 accent-[#534AB7]" id="auto-balance" aria-describedby="auto-balance-desc" />
+              <input type="checkbox" className="w-4 h-4 accent-[#534AB7]" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4">
-          <h3 className="text-base font-bold text-slate-800">
+        <div className="rounded-xl p-5 border shadow-sm flex flex-col gap-4" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+          <h3 className="text-base font-bold text-white">
             Seguridad y Cumplimiento
           </h3>
 
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <span className="text-sm font-semibold text-slate-800 block">
+                <span className="text-sm font-semibold text-white block">
                   Autenticación de Dos Factores
                 </span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-cyan-100/60">
                   Protege la cuenta con un código de seguridad adicional.
                 </span>
               </div>
@@ -113,10 +113,10 @@ function ConfiguracionView() {
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-sm font-semibold text-slate-800 block">
+                <span className="text-sm font-semibold text-white block">
                   Cumplimiento normativo
                 </span>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-cyan-100/60">
                   GDPR, CCPA, Ley 21.719 e ISO/IEC 25010.
                 </span>
               </div>
@@ -130,159 +130,102 @@ function ConfiguracionView() {
     </div>
   );
 }
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeView, setActiveView] = useState<View>("dashboard");
-  const [isMobile, setIsMobile] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const notifications = 3;
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Close mobile menu when view changes
-  useEffect(() => {
-    if (isMobile) {
-      setMobileMenuOpen(false);
-    }
-  }, [activeView, isMobile]);
 
   if (!isLoggedIn) {
     return <Login onLogin={() => setIsLoggedIn(true)} />;
   }
 
-  // Map active view back to sidebar active items ("proyectos-gantt" maps to "proyectos" highlight)
-  const sidebarActiveView = activeView === "proyectos-gantt" ? "proyectos" : activeView;
-
   return (
     <div
       className="flex h-screen overflow-hidden"
       style={{
-        background: "#FFFFFF",
-        color: "#1E1B4B",
+        background: "#061673",
+        color: "#F8FAFC",
         fontFamily: "'Inter', system-ui, sans-serif",
       }}
     >
-      {/* Mobile menu overlay */}
-      {isMobile && mobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40"
-          onClick={() => setMobileMenuOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Mobile menu toggle */}
-      {isMobile && (
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="fixed top-4 left-4 z-50 rounded-lg p-2 bg-white border border-slate-200 shadow-md focus:outline-none focus:ring-2 focus:ring-[#534AB7]"
-          style={{ minHeight: "44px", minWidth: "44px" }}
-          aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={mobileMenuOpen}
-        >
-          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      )}
-
-      {/* Sidebar navigation */}
       <Sidebar
-        activeView={sidebarActiveView}
+        activeView={activeView}
         onNavigate={(v) => setActiveView(v as View)}
         onLogout={() => setIsLoggedIn(false)}
-        mobileMenuOpen={mobileMenuOpen}
-        setMobileMenuOpen={setMobileMenuOpen}
       />
 
-      {/* Main app panel */}
       <div className="flex flex-col flex-1 overflow-hidden">
         <header
-          className="flex items-center justify-between px-4 sm:px-8 py-3.5 shrink-0 bg-white border-b border-[#E5E7EB] h-16"
-          role="banner"
+          className="flex items-center justify-between px-6 py-4 shrink-0"
+          style={{
+            borderBottom: "1px solid rgba(255,255,255,0.08)",
+            background: "rgba(6,22,115,0.9)",
+          }}
         >
-          {/* Breadcrumb Left */}
-          <div className="flex items-center gap-2 ml-8 sm:ml-0">
-            <span className="text-xs font-bold text-slate-400" aria-hidden="true">OptiResult</span>
-            <span className="text-slate-300 text-xs" aria-hidden="true">/</span>
-            <span className="text-xs text-[#534AB7] font-extrabold uppercase tracking-wider">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-cyan-100/70">OptiResult</span>
+            <span className="text-cyan-100/30 text-xs">/</span>
+            <span className="text-xs text-[#79AEF2] font-semibold">
               {viewTitles[activeView]}
             </span>
           </div>
 
-          {/* Search & Actions Right */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-4">
             <div
-              className="hidden sm:flex items-center gap-2 rounded-lg px-3 py-1.5 bg-[#F8F7FF] border border-[#E5E7EB] h-9"
+              className="flex items-center gap-2 rounded-xl px-3 py-2"
+              style={{ background: "rgba(13,21,71,0.9)", border: "1px solid rgba(255,255,255,0.08)" }}
             >
-              <Search size={14} className="text-slate-400" aria-hidden="true" />
+              <Search size={14} color="#79AEF2" />
               <input
-                type="text"
-                placeholder="Buscar proyectos, tareas..."
-                className="bg-transparent border-none outline-none text-xs text-slate-800 placeholder-slate-400 w-32 sm:w-48 font-medium"
-                aria-label="Buscar proyectos y tareas"
+                placeholder="Buscar tareas, proyectos..."
+                className="bg-transparent border-none outline-none text-xs text-white placeholder:text-cyan-100/40 w-48"
               />
-              <kbd className="text-[10px] text-slate-400 bg-white border border-slate-200 rounded px-1.5 py-0.5 font-sans" aria-hidden="true">
+              <kbd className="text-[10px] text-cyan-100/40 bg-white/5 border border-white/10 rounded px-1.5 py-0.5 font-sans">
                 ⌘K
               </kbd>
             </div>
 
-            <button
-              className="relative rounded-xl p-2 bg-slate-50 border border-slate-200 cursor-pointer hover:bg-slate-100 transition-colors focus:outline-none focus:ring-2 focus:ring-[#534AB7]"
-              style={{ minHeight: "44px", minWidth: "44px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-              aria-label={`Notificaciones (${notifications} nuevas)`}
-              aria-live="polite"
-            >
-              <Bell size={16} className="text-slate-500" />
+            <button className="relative rounded-xl p-2 bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors">
+              <Bell size={16} color="#C7D2FE" />
               {notifications > 0 && (
                 <span
                   className="absolute rounded-full flex items-center justify-center text-white"
                   style={{
-                    width: 14,
-                    height: 14,
-                    top: -2,
-                    right: -2,
+                    width: 16,
+                    height: 16,
+                    top: -4,
+                    right: -4,
                     background: "#D94F4F",
-                    fontSize: "8px",
-                    fontWeight: 800,
+                    fontSize: "9px",
+                    fontWeight: 700,
                   }}
-                  aria-hidden="true"
                 >
                   {notifications}
                 </span>
               )}
             </button>
 
-            <div className="hidden sm:block w-px h-5 bg-slate-200" />
+            <div className="w-px h-6 bg-white/10" />
 
             <div className="flex items-center gap-2">
-              <button
-                className="rounded-full flex items-center justify-center cursor-pointer font-bold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2 hover:opacity-90 transition-opacity"
+              <div
+                className="rounded-full flex items-center justify-center cursor-pointer font-bold text-white shadow-sm"
                 style={{
                   width: 32,
                   height: 32,
                   background: "#534AB7",
                   fontSize: "0.78rem",
-                  minHeight: "44px",
-                  minWidth: "44px",
                 }}
-                aria-label="Perfil de Carlos López"
               >
-                CL
-              </button>
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="text-xs font-bold text-slate-800">Carlos López</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Developer Lead</span>
+                AM
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col overflow-hidden bg-white">
-          {activeView === "dashboard" && <Dashboard onNavigate={(v) => setActiveView(v as View)} />}
+        <main className="flex-1 overflow-hidden" style={{ background: "#061673" }}>
+          {activeView === "dashboard" && <Dashboard />}
           {activeView === "proyectos" && <ProjectGantt />}
           {activeView === "tablero" && <AgileBoard />}
           {activeView === "recursos" && <ResourceManagement />}

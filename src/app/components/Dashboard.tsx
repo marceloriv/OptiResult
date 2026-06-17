@@ -1,387 +1,385 @@
+import React from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import {
-    AlertTriangle,
-    ArrowUpRight,
-    Calendar,
-    CheckSquare,
-    Edit2,
-    Eye,
-    Rocket,
-    Users2
+  FolderOpen,
+  ClipboardList,
+  Users2,
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown,
+  ChevronRight,
+  MoreVertical,
+  Calendar,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-interface DashboardProps {
-  onNavigate?: (view: string) => void;
-}
-
-const kpiData = [
-  { label: "Proyectos Activos", value: "12", trend: "+2 este mes", trendType: "success", icon: Rocket, color: "#534AB7" },
-  { label: "Tareas Pendientes", value: "47", trend: "8 vencen hoy", trendType: "danger", icon: CheckSquare, color: "#E8C53A" },
-  { label: "Recursos Asignados", value: "18/22", trend: "4 disponibles", trendType: "muted", icon: Users2, color: "#1D9E75" },
-  { label: "Alertas de Vencimiento", value: "5", trend: "Críticas: 2", trendType: "danger", icon: AlertTriangle, color: "#D94F4F" }
+// KPI definitions
+const kpis = [
+  {
+    label: "Proyectos Clínicos Activos",
+    value: "12",
+    delta: "+2 este mes",
+    trend: "up",
+    icon: FolderOpen,
+    color: "#534AB7", // primary
+  },
+  {
+    label: "Entregables Pendientes",
+    value: "38",
+    delta: "-5 vs ayer",
+    trend: "up",
+    icon: ClipboardList,
+    color: "#a83ae8", // warning
+  },
+  {
+    label: "Equipo Multidisciplinario",
+    value: "84%",
+    delta: "+4% vs sem ant",
+    trend: "up",
+    icon: Users2,
+    color: "#1d269e", // success
+  },
+  {
+    label: "Eficiencia Operativa",
+    value: "3",
+    delta: "Crítico",
+    trend: "down",
+    icon: AlertTriangle,
+    color: "#df77bf", // alert
+  },
 ];
 
-const recentProjects = [
-  { name: "Sistema de Gestión Hospitalaria", leader: "Ana Martínez", status: "En Progreso", statusColor: "#3B82F6", progress: 68, dueDate: "30 Jun 2026" },
-  { name: "App Finanzas Corporativas", leader: "Carlos López", status: "En Revisión", statusColor: "#F59E0B", progress: 85, dueDate: "15 Jun 2026" },
-  { name: "Portal Educativo eLearning", leader: "María Torres", status: "Por Iniciar", statusColor: "#6B7280", progress: 5, dueDate: "20 Jul 2026" },
-  { name: "Migración Cloud AWS", leader: "David Lee", status: "Completado", statusColor: "#10B981", progress: 100, dueDate: "01 Jun 2026" },
-  { name: "Dashboard Analítico BI", leader: "Sofía Ramos", status: "En Progreso", statusColor: "#3B82F6", progress: 42, dueDate: "10 Jul 2026" }
+// Kanban columns and tasks
+const initialKanbanData = [
+  {
+    title: "Por Hacer",
+    color: "#EEEDFE",
+    textColor: "#534AB7",
+    tasks: [
+      {
+        id: "T-101",
+        title: "Diseñar flujo de agendamiento médico para clínicas privadas",
+        priority: "Alta",
+        dueDate: "20 Jun",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=60",
+        assignee: "Sofia R."
+      },
+      {
+        id: "T-102",
+        title: "Redactar reglas de acceso y trazabilidad para ficha clínica digital",
+        priority: "Baja",
+        dueDate: "28 Jun",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=60",
+        assignee: "Pedro G."
+      }
+    ]
+  },
+  {
+    title: "En Progreso",
+    color: "#EEEDFE",
+    textColor: "#534AB7",
+    tasks: [
+      {
+        id: "T-201",
+        title: "Integrar sistema de laboratorio clínico con validación de resultados",
+        priority: "Alta",
+        dueDate: "18 Jun",
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=60",
+        assignee: "Ana M."
+      },
+      {
+        id: "T-202",
+        title: "Implementar portal de pacientes con acceso seguro y responsive",
+        priority: "Media",
+        dueDate: "22 Jun",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=60",
+        assignee: "Carlos L."
+      }
+    ]
+  },
+  {
+    title: "En Revisión",
+    color: "#EEEDFE",
+    textColor: "#534AB7",
+    tasks: [
+      {
+        id: "T-301",
+        title: "Validar integración HIS con trazabilidad de admisiones y egresos",
+        priority: "Media",
+        dueDate: "16 Jun",
+        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&auto=format&fit=crop&q=60",
+        assignee: "Elena V."
+      }
+    ]
+  },
+  {
+    title: "Completado",
+    color: "#EEEDFE",
+    textColor: "#534AB7",
+    tasks: [
+      {
+        id: "T-401",
+        title: "Cerrar pruebas de telemedicina y validación de audio/video",
+        priority: "Alta",
+        dueDate: "10 Jun",
+        avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=80&auto=format&fit=crop&q=60",
+        assignee: "Marcos T."
+      },
+      {
+        id: "T-402",
+        title: "Sincronizar ficha clínica digital con el flujo de laboratorio",
+        priority: "Baja",
+        dueDate: "12 Jun",
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&auto=format&fit=crop&q=60",
+        assignee: "Lucia S."
+      }
+    ]
+  }
 ];
 
-const myTasks = [
-  { name: "Revisar arquitectura de microservicios", priority: "Alta", priorityColor: "#D94F4F", due: "Hoy" },
-  { name: "Subir correcciones de cookies JWT", priority: "Alta", priorityColor: "#D94F4F", due: "Mañana" },
-  { name: "Configurar webhooks Slack", priority: "Media", priorityColor: "#E8C53A", due: "16 Jun" }
+const pieData = [
+  { name: "Completados", value: 74, color: "#534AB7" },
+  { name: "Restante", value: 26, color: "#EEEDFE" }
 ];
 
-const recentActivity = [
-  { id: 1, text: "Ana Martínez completó la tarea 'Diseño de base de datos'", time: "hace 2h", icon: "✅" },
-  { id: 2, text: "Carlos López comentó en 'Revisión de API'", time: "hace 3h", icon: "💬" },
-  { id: 3, text: "David Lee unió al canal general de DevOps", time: "hace 5h", icon: "👥" },
-  { id: 4, text: "Nueva versión v1.4.2 desplegada en Staging", time: "hace 8h", icon: "🚀" },
-  { id: 5, text: "María Torres actualizó la documentación del portal", time: "hace 1d", icon: "📝" }
-];
-
-const donutData = [
-  { name: "Ocupado", value: 73, color: "#534AB7" },
-  { name: "Disponible", value: 27, color: "#EEEDFE" }
-];
-
-export function Dashboard({ onNavigate }: DashboardProps) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
+export function Dashboard() {
   return (
     <div
-      className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-8 gap-6 sm:gap-8"
-      style={{ background: "#F8F7FF", fontFamily: "'Inter', sans-serif" }}
-      role="main"
-      aria-label="Dashboard principal"
+      className="flex h-full overflow-hidden"
+      style={{ background: "#061673", fontFamily: "'Inter', sans-serif" }}
     >
-      {/* Greeting Banner */}
-      <div
-        className="w-full rounded-2xl p-5 sm:p-6 border flex flex-col md:flex-row items-start md:items-center justify-between relative overflow-hidden gap-5 shadow-sm shrink-0"
-        style={{
-          background: "linear-gradient(135deg, #534AB7 0%, #2E277A 100%)",
-          borderColor: "rgba(83, 74, 183, 0.2)",
-        }}
-        role="banner"
-        aria-label="Saludo personalizado"
-      >
-        {/* Subtle decorative glowing background patterns */}
-        <div className="absolute -right-10 -top-10 w-44 h-44 bg-[#9B92F2] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
-        <div className="absolute left-1/3 -bottom-10 w-36 h-36 bg-[#E0DDFE] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
-
-        <div className="flex flex-col gap-3 relative z-10 w-full md:max-w-[75%]">
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight flex items-center gap-2">
-            Buenos días, Carlos <span className="animate-bounce">👋</span>
-          </h1>
-          
-          <p className="text-xs sm:text-sm text-[#E2DFFD]/90 font-medium">
-            Resumen de tu jornada para hoy:
-          </p>
-
-          <div className="flex flex-col sm:flex-row flex-wrap gap-2.5 sm:items-center mt-1">
-            <span className="font-semibold text-white bg-white/15 px-3 py-1.5 rounded-lg inline-flex items-center gap-2 text-xs sm:text-sm border border-white/10 w-fit">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#E8C53A] border border-white/20"></span>
-              <strong>7</strong> tareas pendientes
-            </span>
-            <span className="font-semibold text-white bg-[#D94F4F]/85 px-3 py-1.5 rounded-lg inline-flex items-center gap-2 text-xs sm:text-sm border border-[#D94F4F]/35 w-fit">
-              <span className="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></span>
-              <strong>2</strong> proyectos con alerta de vencimiento hoy
+      {/* Main dashboard content area */}
+      <div className="flex-1 flex flex-col overflow-y-auto p-6 gap-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-white" style={{ fontSize: 24 }}>
+              Dashboard Principal
+            </h1>
+            <p className="text-sm text-cyan-100/70 mt-1">
+              Monitorea el estado general y el rendimiento de los proyectos clínicos en tiempo real.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-cyan-100/70 bg-white/5 rounded-lg px-3 py-1.5 border border-white/10">
+              Semana actual: 24
             </span>
           </div>
         </div>
 
-        {onNavigate && (
-          <div className="relative z-10 flex items-center gap-2 mt-2 md:mt-0 w-full md:w-auto">
-            <button
-              onClick={() => onNavigate("tablero")}
-              className="w-full md:w-auto px-4 py-2.5 bg-white text-[#534AB7] hover:bg-white/95 font-bold text-sm rounded-xl transition-all duration-200 shadow-sm active:scale-95 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#534AB7] cursor-pointer text-center"
-            >
-              Ver mis tareas
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* KPI Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 shrink-0" role="region" aria-label="Indicadores clave de rendimiento">
-        {kpiData.map((kpi) => {
-          const Icon = kpi.icon;
-          return (
-            <div
-              key={kpi.label}
-              className="bg-white rounded-xl p-4 sm:p-5 border flex flex-col gap-4 transition-all duration-300 hover:shadow-md focus-within:ring-2 focus-within:ring-[#534AB7]"
-              style={{
-                borderColor: "#E5E7EB",
-                boxShadow: "0 2px 12px rgba(83, 74, 183, 0.04)"
-              }}
-              role="article"
-              aria-label={`${kpi.label}: ${kpi.value}`}
-            >
-              <div className="flex items-center justify-between">
-                <div
-                  className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: `${kpi.color}15` }}
-                >
-                  <Icon size={20} color={kpi.color} aria-hidden="true" />
-                </div>
-                <span
-                  className="text-xs font-bold px-2.5 py-0.5 rounded-full"
-                  style={{
-                    background: kpi.trendType === "danger" ? "#FEE2E2" : kpi.trendType === "success" ? "#F0FDF4" : "#F3F4F6",
-                    color: kpi.trendType === "danger" ? "#D94F4F" : kpi.trendType === "success" ? "#1D9E75" : "#6B7280"
-                  }}
-                >
-                  {kpi.trend}
-                </span>
-              </div>
-              <div>
-                <h3 className="text-2xl font-extrabold text-[#1A1A2E] leading-none">
-                  {kpi.value}
-                </h3>
-                <p className="text-xs text-[#6B7280] font-bold mt-1.5 uppercase tracking-wider">
-                  {kpi.label}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Columns: Left (70%) and Right (30%) */}
-      <div className="flex flex-col lg:flex-row gap-6 shrink-0">
-        {/* Left Column (70%) */}
-        <div className="w-full lg:w-[70%] flex flex-col gap-6">
-          {/* Recent Projects Card */}
-          <div className="bg-white rounded-xl border p-6 shadow-xs flex flex-col gap-4" style={{ borderColor: "#E5E7EB" }}>
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-[#1A1A2E]" style={{ fontSize: 22 }}>
-                Proyectos Recientes
-              </h2>
-              <button
-                onClick={() => onNavigate("proyectos")}
-                className="text-xs font-bold text-[#534AB7] hover:underline flex items-center gap-0.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2 rounded px-2.5 py-1.5"
-                style={{ minHeight: "44px", minWidth: "44px" }}
-                aria-label="Ver todos los proyectos"
+        {/* 4 KPI Cards in a row */}
+        <div className="grid grid-cols-4 gap-6">
+          {kpis.map((kpi) => {
+            const Icon = kpi.icon;
+            return (
+              <div
+                key={kpi.label}
+                className="rounded-xl p-5 transition-all duration-300 hover:shadow-md border"
+                style={{
+                  background: "rgba(13,21,71,0.92)",
+                  borderColor: "rgba(255,255,255,0.08)",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.24)",
+                }}
               >
-                Ver todos <ArrowUpRight size={14} aria-hidden="true" />
-              </button>
-            </div>
+                <div className="flex items-center justify-between mb-4">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ background: `${kpi.color}15` }}
+                  >
+                    <Icon size={20} color={kpi.color} />
+                  </div>
+                  <span
+                    className="text-xs font-medium flex items-center gap-1 px-2 py-0.5 rounded-full"
+                    style={{
+                      background: kpi.color === "#D94F4F" ? "rgba(217,79,79,0.18)" : "rgba(121,174,242,0.16)",
+                      color: kpi.color === "#D94F4F" ? "#FFB4B4" : "#BAE6FD",
+                    }}
+                  >
+                    {kpi.trend === "up" ? (
+                      <TrendingUp size={12} />
+                    ) : (
+                      <TrendingDown size={12} />
+                    )}
+                    {kpi.delta}
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white leading-tight">
+                    {kpi.value}
+                  </h3>
+                  <p className="text-xs text-cyan-100/70 mt-1 font-medium">
+                    {kpi.label}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
-            <div className="overflow-x-auto" role="region" aria-label="Tabla de proyectos recientes" tabIndex={0}>
-              <table className="w-full text-left border-collapse" role="table">
-                <thead>
-                  <tr className="border-b border-slate-100 text-xs text-[#6B7280] font-bold uppercase tracking-wider">
-                    <th className="pb-3" scope="col">Nombre del Proyecto</th>
-                    <th className="pb-3" scope="col">Líder</th>
-                    <th className="pb-3" scope="col">Estado</th>
-                    <th className="pb-3" scope="col">Progreso</th>
-                    <th className="pb-3" scope="col">Fecha Límite</th>
-                    <th className="pb-3 text-right" scope="col">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentProjects.map((p, idx) => (
-                    <tr
-                      key={p.name}
-                      className="border-b border-slate-50 last:border-none text-sm text-slate-700 hover:bg-slate-50/50 transition-colors"
+        {/* Kanban Board */}
+        <div className="flex-1 flex flex-col min-h-[480px]">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-white" style={{ fontSize: 18 }}>
+              Tablero de Tareas Kanban
+            </h2>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#534AB7]"></span>
+              <span className="text-xs text-cyan-100/70 font-medium">Sprint Clínico v1.4</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-4 gap-4 flex-1">
+            {initialKanbanData.map((column) => (
+              <div
+                key={column.title}
+                className="rounded-xl p-3.5 flex flex-col gap-3.5 border"
+                style={{ background: "rgba(13,21,71,0.65)", borderColor: "rgba(255,255,255,0.08)" }}
+              >
+                {/* Column Header */}
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="px-2.5 py-0.5 rounded-full text-xs font-bold"
+                      style={{ background: column.color, color: column.textColor }}
                     >
-                      <td className="py-3.5 font-semibold text-slate-800">{p.name}</td>
-                      <td className="py-3.5 text-xs font-medium text-slate-500">{p.leader}</td>
-                      <td className="py-3.5">
+                      {column.title}
+                    </span>
+                    <span className="text-xs text-cyan-100/50 font-bold">
+                      {column.tasks.length}
+                    </span>
+                  </div>
+                  <button className="text-cyan-100/50 hover:text-white">
+                    <MoreVertical size={16} />
+                  </button>
+                </div>
+
+                {/* Cards Container */}
+                <div className="flex flex-col gap-3 overflow-y-auto max-h-[360px] pr-0.5">
+                  {column.tasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className="p-4 rounded-xl border transition-all hover:-translate-y-0.5 duration-200"
+                      style={{
+                        background: "rgba(6,22,115,0.82)",
+                        borderColor: "rgba(255,255,255,0.08)",
+                        boxShadow: "0 2px 12px rgba(0,0,0,0.18)",
+                      }}
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-[10px] font-bold text-[#79AEF2] bg-[#EEEDFE]/10 px-2 py-0.5 rounded">
+                          {task.id}
+                        </span>
                         <span
                           className="text-[10px] font-bold px-2 py-0.5 rounded-full"
                           style={{
-                            background: `${p.statusColor}15`,
-                            color: p.statusColor,
+                            background:
+                              task.priority === "Alta"
+                                ? "#FEE2E2"
+                                : task.priority === "Media"
+                                ? "#FEF3C7"
+                                : "#F0FDF4",
+                            color:
+                              task.priority === "Alta"
+                                ? "#D94F4F"
+                                : task.priority === "Media"
+                                ? "#B45309"
+                                : "#1D9E75",
                           }}
                         >
-                          {p.status}
+                          {task.priority}
                         </span>
-                      </td>
-                      <td className="py-3.5">
-                        <div className="flex items-center gap-2 w-28">
-                          <div className="flex-1 bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full"
-                              style={{ width: `${p.progress}%`, backgroundColor: p.statusColor }}
-                            />
-                          </div>
-                          <span className="text-[10px] font-extrabold">{p.progress}%</span>
+                      </div>
+                      <h4 className="text-sm font-semibold text-white leading-snug mb-3">
+                        {task.title}
+                      </h4>
+                      <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={task.avatar}
+                            alt={task.assignee}
+                            className="w-6 h-6 rounded-full object-cover"
+                          />
+                          <span className="text-xs text-cyan-100/70 font-medium">{task.assignee}</span>
                         </div>
-                      </td>
-                      <td className="py-3.5 text-xs font-semibold text-slate-500">{p.dueDate}</td>
-                      <td className="py-3.5 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            onClick={() => onNavigate("proyectos")}
-                            className="p-2 text-slate-400 hover:text-[#534AB7] rounded hover:bg-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
-                            style={{ minHeight: "44px", minWidth: "44px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-                            aria-label={`Ver proyecto ${p.name}`}
-                          >
-                            <Eye size={14} aria-hidden="true" />
-                          </button>
-                          <button
-                            className="p-2 text-slate-400 hover:text-[#534AB7] rounded hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
-                            style={{ minHeight: "44px", minWidth: "44px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-                            aria-label={`Editar proyecto ${p.name}`}
-                          >
-                            <Edit2 size={14} aria-hidden="true" />
-                          </button>
+                        <div className="flex items-center gap-1 text-cyan-100/50">
+                          <Calendar size={12} />
+                          <span className="text-[10px] font-semibold">{task.dueDate}</span>
                         </div>
-                      </td>
-                    </tr>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Sidebar - Progress Donut Chart */}
+      <div
+        className="w-[280px] border-l border-white/10 flex flex-col p-6 gap-6 justify-between shrink-0"
+        style={{ background: "rgba(6,22,115,0.88)" }}
+      >
+        <div className="flex flex-col gap-6">
+          <div>
+            <h3 className="text-base font-bold text-white" style={{ fontSize: 16 }}>
+              Progreso Global
+            </h3>
+            <p className="text-xs text-cyan-100/70 mt-1">
+              Seguimiento del programa clínico actual
+            </p>
+          </div>
+
+          {/* Donut Chart */}
+          <div className="flex flex-col items-center justify-center relative my-4">
+            <ResponsiveContainer width="100%" height={180}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={55}
+                  outerRadius={75}
+                  startAngle={90}
+                  endAngle={-270}
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="absolute flex flex-col items-center justify-center">
+              <span className="text-3xl font-extrabold text-[#79AEF2]">74%</span>
+              <span className="text-[10px] font-bold text-cyan-100/50 uppercase tracking-wider mt-0.5">Entregables</span>
             </div>
           </div>
 
-          {/* Kanban Strip Preview */}
-          <div
-            className="bg-white rounded-xl border p-5 shadow-xs flex items-center justify-between flex-wrap gap-4"
-            style={{ borderColor: "#E5E7EB" }}
-          >
-            <div className="flex items-center gap-6 flex-wrap">
-              <span className="text-xs font-bold text-[#6B7280] uppercase tracking-wider">Tablero Kanban:</span>
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
-                  Por Hacer <strong className="text-slate-800">12</strong>
-                </span>
-                <span className="flex items-center gap-1.5 text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-                  En Progreso <strong className="text-blue-800">8</strong>
-                </span>
-                <span className="flex items-center gap-1.5 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
-                  En Revisión <strong className="text-amber-800">6</strong>
-                </span>
-                <span className="flex items-center gap-1.5 text-xs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                  Completado <strong className="text-green-800">21</strong>
-                </span>
-              </div>
+          <div className="flex flex-col gap-3 p-4 rounded-xl border shadow-sm" style={{ background: "rgba(13,21,71,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-cyan-100/70 font-medium">Entregables Listos:</span>
+              <span className="font-bold text-white">26 / 35</span>
             </div>
-            <button
-              onClick={() => onNavigate("tablero")}
-              className="bg-[#534AB7] hover:bg-[#4339A6] text-white font-bold text-xs px-4 py-2.5 rounded-lg transition-all cursor-pointer shadow-sm focus:outline-none focus:ring-2 focus:ring-[#534AB7] focus:ring-offset-2"
-              style={{ minHeight: "44px" }}
-              aria-label="Abrir tablero Kanban completo"
-            >
-              Abrir Kanban completo →
-            </button>
+            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+              <div className="bg-[#534AB7] h-full rounded-full" style={{ width: "74%" }}></div>
+            </div>
+            <div className="flex justify-between items-center text-xs mt-1">
+              <span className="text-cyan-100/70 font-medium">Días restantes:</span>
+              <span className="font-bold text-[#FFB4B4] bg-red-500/15 px-2 py-0.5 rounded">12 días</span>
+            </div>
           </div>
         </div>
 
-        {/* Right Column (30%) */}
-        <div className="w-full lg:w-[30%] flex flex-col gap-6">
-          {/* Workload Donut Card */}
-          <div className="bg-white rounded-xl border p-4 sm:p-5 shadow-xs flex flex-col gap-4" style={{ borderColor: "#E5E7EB" }} role="region" aria-label="Gráfico de carga de trabajo">
-            <h3 className="text-base font-bold text-[#1A1A2E]" style={{ fontSize: 16 }}>
-              Mi Carga de Trabajo
-            </h3>
-            <div className="flex items-center justify-center relative my-2 h-[140px]" role="img" aria-label="Gráfico circular: 73% ocupado, 27% disponible">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={donutData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={45}
-                    outerRadius={60}
-                    startAngle={90}
-                    endAngle={-270}
-                    dataKey="value"
-                  >
-                    {donutData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="absolute flex flex-col items-center justify-center text-center">
-                <span className="text-2xl font-extrabold text-[#534AB7]">73%</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Ocupado</span>
-              </div>
-            </div>
-
-            {/* My active task list */}
-            <div className="flex flex-col gap-2.5 border-t border-slate-100 pt-4">
-              {myTasks.map((t) => (
-                <div key={t.name} className="flex justify-between items-center bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                  <div className="truncate pr-2">
-                    <span className="text-xs font-semibold text-slate-700 block truncate leading-snug">{t.name}</span>
-                    <span className="text-[10px] text-slate-400 font-medium">Límite: {t.due}</span>
-                  </div>
-                  <span
-                    className="text-[9px] font-extrabold px-1.5 py-0.5 rounded shrink-0"
-                    style={{
-                      background: t.priorityColor === "#D94F4F" ? "#FEE2E2" : "#FEF3C7",
-                      color: t.priorityColor
-                    }}
-                  >
-                    {t.priority}
-                  </span>
-                </div>
-              ))}
-            </div>
+        {/* Quick project info */}
+        <div className="p-4 rounded-xl border flex flex-col gap-2.5" style={{ background: "rgba(238,237,254,0.06)", borderColor: "rgba(83,74,183,0.2)" }}>
+          <h4 className="text-xs font-bold text-[#534AB7] uppercase tracking-wider">
+            Programa Clínico Activo
+          </h4>
+          <div className="text-sm font-bold text-white leading-tight">
+            Plataforma de gestión clínica para clínicas y hospitales privados
           </div>
-
-          {/* Activity Feed */}
-          <div className="bg-white rounded-xl border p-4 sm:p-5 shadow-xs flex flex-col gap-4" style={{ borderColor: "#E5E7EB" }} role="region" aria-label="Feed de actividad reciente">
-            <h3 className="text-base font-bold text-[#1A1A2E]" style={{ fontSize: 16 }}>
-              Actividad Reciente
-            </h3>
-            <div className="flex flex-col gap-3">
-              {recentActivity.map((a) => (
-                <div key={a.id} className="flex gap-2.5 items-start text-xs text-slate-600 border-b border-slate-50 pb-2.5 last:border-none last:pb-0">
-                  <span className="text-sm mt-0.5 shrink-0">{a.icon}</span>
-                  <div>
-                    <p className="leading-snug text-slate-700 font-medium">{a.text}</p>
-                    <span className="text-[10px] text-[#9CA3AF] mt-0.5 block">{a.time}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Calendar Widget Preview */}
-          <div className="bg-white rounded-xl border p-4 sm:p-5 shadow-xs flex flex-col gap-3" style={{ borderColor: "#E5E7EB" }} role="region" aria-label="Calendario de próximos eventos">
-            <h3 className="text-base font-bold text-[#1A1A2E] flex items-center gap-1.5" style={{ fontSize: 16 }}>
-              <Calendar size={16} className="text-[#534AB7]" />
-              Próximos Eventos
-            </h3>
-            <div className="grid grid-cols-7 gap-1 text-center font-bold text-[10px] text-[#6B7280] border-b border-slate-100 pb-2" role="row">
-              <span role="columnheader" aria-label="Lunes">L</span>
-              <span role="columnheader" aria-label="Martes">M</span>
-              <span role="columnheader" aria-label="Miércoles">M</span>
-              <span role="columnheader" aria-label="Jueves">J</span>
-              <span role="columnheader" aria-label="Viernes">V</span>
-              <span role="columnheader" aria-label="Sábado">S</span>
-              <span role="columnheader" aria-label="Domingo">D</span>
-            </div>
-            <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-600" role="row">
-              <span className="py-1" aria-label="8 de junio">8</span>
-              <span className="py-1" aria-label="9 de junio">9</span>
-              <span className="py-1" aria-label="10 de junio">10</span>
-              <span className="py-1" aria-label="11 de junio">11</span>
-              <span className="py-1 bg-[#EEEDFE] text-[#534AB7] rounded-full relative" aria-label="12 de junio, evento pendiente">
-                12
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#D94F4F]" aria-hidden="true"></span>
-              </span>
-              <span className="py-1" aria-label="13 de junio">13</span>
-              <span className="py-1 bg-[#534AB7] text-white rounded-full relative" aria-label="14 de junio, hoy">
-                14
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#10B981]" aria-hidden="true"></span>
-              </span>
-            </div>
+          <div className="text-xs text-cyan-100/70">
+            Líder: <strong>Ana Martínez</strong>
           </div>
         </div>
       </div>
