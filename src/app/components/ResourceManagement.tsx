@@ -136,7 +136,7 @@ export function ResourceManagement() {
     >
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-4 right-4 z-50 bg-[#534AB7] text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 animate-fade-in border border-white/20">
+        <div className="fixed top-4 right-4 z-50 bg-[#534AB7] text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 animate-in fade-in duration-300 border border-white/20">
           <Check size={16} />
           <span className="text-xs font-semibold">{toastMessage}</span>
         </div>
@@ -364,7 +364,7 @@ export function ResourceManagement() {
       {/* Reassign Simulation Modal */}
       {selectedMember && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-[440px] rounded-2xl p-6 shadow-2xl border animate-scale-in" style={{ background: "#0D1547", borderColor: "rgba(255,255,255,0.08)" }}>
+          <div className="w-full max-w-[440px] rounded-2xl p-6 shadow-2xl border animate-in zoom-in-95 duration-300" style={{ background: "#0D1547", borderColor: "rgba(255,255,255,0.08)" }}>
             <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <Users2 size={18} className="text-[#534AB7]" />
