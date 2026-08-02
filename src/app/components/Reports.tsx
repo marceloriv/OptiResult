@@ -79,7 +79,7 @@ export function Reports() {
 
   return (
     <div
-      className="flex-1 flex flex-col overflow-y-auto p-6 gap-6"
+      className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 gap-4 sm:gap-6"
       style={{ background: "#FFFFFF", fontFamily: "'Inter', sans-serif" }}
     >
       {/* Header */}
@@ -142,7 +142,7 @@ export function Reports() {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Line Chart: Project Completion Trend */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4">
           <div>
@@ -192,10 +192,11 @@ export function Reports() {
       </div>
 
       {/* Projects Summary Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col">
         <div className="px-5 py-4 border-b border-slate-100">
           <h3 className="text-sm font-bold text-slate-800">Resumen Financiero y de Estados</h3>
         </div>
+        <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50 border-b border-slate-200">
@@ -243,6 +244,7 @@ export function Reports() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

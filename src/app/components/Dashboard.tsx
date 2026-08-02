@@ -1,4 +1,3 @@
-import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import {
   FolderOpen,
@@ -142,13 +141,81 @@ const pieData = [
 ];
 
 export function Dashboard() {
+  const progressPanel = (
+    <>
+      <div className="flex flex-col gap-6">
+        <div>
+          <h3 className="text-base font-bold text-white" style={{ fontSize: 16 }}>
+            Progreso Global
+          </h3>
+          <p className="text-xs text-cyan-100/70 mt-1">
+            Seguimiento del programa clínico actual
+          </p>
+        </div>
+
+        {/* Donut Chart */}
+        <div className="flex flex-col items-center justify-center relative my-4">
+          <ResponsiveContainer width="100%" height={180}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                cx="50%"
+                cy="50%"
+                innerRadius={55}
+                outerRadius={75}
+                startAngle={90}
+                endAngle={-270}
+                dataKey="value"
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="absolute flex flex-col items-center justify-center">
+            <span className="text-3xl font-extrabold text-[#79AEF2]">74%</span>
+            <span className="text-[10px] font-bold text-cyan-100/50 uppercase tracking-wider mt-0.5">Entregables</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 p-4 rounded-xl border shadow-sm" style={{ background: "rgba(13,21,71,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
+          <div className="flex justify-between items-center text-xs">
+            <span className="text-cyan-100/70 font-medium">Entregables Listos:</span>
+            <span className="font-bold text-white">26 / 35</span>
+          </div>
+          <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+            <div className="bg-[#534AB7] h-full rounded-full" style={{ width: "74%" }}></div>
+          </div>
+          <div className="flex justify-between items-center text-xs mt-1">
+            <span className="text-cyan-100/70 font-medium">Días restantes:</span>
+            <span className="font-bold text-[#FFB4B4] bg-red-500/15 px-2 py-0.5 rounded">12 días</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick project info */}
+      <div className="p-4 rounded-xl border flex flex-col gap-2.5" style={{ background: "rgba(238,237,254,0.06)", borderColor: "rgba(83,74,183,0.2)" }}>
+        <h4 className="text-xs font-bold text-[#534AB7] uppercase tracking-wider">
+          Programa Clínico Activo
+        </h4>
+        <div className="text-sm font-bold text-white leading-tight">
+          Plataforma de gestión clínica para clínicas y hospitales privados
+        </div>
+        <div className="text-xs text-cyan-100/70">
+          Líder: <strong>Ana Martínez</strong>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div
       className="flex h-full overflow-hidden"
       style={{ background: "#061673", fontFamily: "'Inter', sans-serif" }}
     >
       {/* Main dashboard content area */}
-      <div className="flex-1 flex flex-col overflow-y-auto p-6 gap-6">
+      <div className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 gap-4 sm:gap-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -167,7 +234,7 @@ export function Dashboard() {
         </div>
 
         {/* 4 KPI Cards in a row */}
-        <div className="grid grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {kpis.map((kpi) => {
             const Icon = kpi.icon;
             return (
@@ -227,7 +294,7 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4 flex-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1">
             {initialKanbanData.map((column) => (
               <div
                 key={column.title}
@@ -312,76 +379,22 @@ export function Dashboard() {
             ))}
           </div>
         </div>
+
+        {/* Progress panel (mobile) */}
+        <div
+          className="lg:hidden flex flex-col gap-6 justify-between rounded-xl border border-white/10 p-6"
+          style={{ background: "rgba(6,22,115,0.88)" }}
+        >
+          {progressPanel}
+        </div>
       </div>
 
-      {/* Right Sidebar - Progress Donut Chart */}
+      {/* Right Sidebar - Progress Donut Chart (desktop) */}
       <div
-        className="w-[280px] border-l border-white/10 flex flex-col p-6 gap-6 justify-between shrink-0"
+        className="hidden lg:flex w-[280px] border-l border-white/10 flex-col p-6 gap-6 justify-between shrink-0"
         style={{ background: "rgba(6,22,115,0.88)" }}
       >
-        <div className="flex flex-col gap-6">
-          <div>
-            <h3 className="text-base font-bold text-white" style={{ fontSize: 16 }}>
-              Progreso Global
-            </h3>
-            <p className="text-xs text-cyan-100/70 mt-1">
-              Seguimiento del programa clínico actual
-            </p>
-          </div>
-
-          {/* Donut Chart */}
-          <div className="flex flex-col items-center justify-center relative my-4">
-            <ResponsiveContainer width="100%" height={180}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={75}
-                  startAngle={90}
-                  endAngle={-270}
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute flex flex-col items-center justify-center">
-              <span className="text-3xl font-extrabold text-[#79AEF2]">74%</span>
-              <span className="text-[10px] font-bold text-cyan-100/50 uppercase tracking-wider mt-0.5">Entregables</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3 p-4 rounded-xl border shadow-sm" style={{ background: "rgba(13,21,71,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
-            <div className="flex justify-between items-center text-xs">
-              <span className="text-cyan-100/70 font-medium">Entregables Listos:</span>
-              <span className="font-bold text-white">26 / 35</span>
-            </div>
-            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-              <div className="bg-[#534AB7] h-full rounded-full" style={{ width: "74%" }}></div>
-            </div>
-            <div className="flex justify-between items-center text-xs mt-1">
-              <span className="text-cyan-100/70 font-medium">Días restantes:</span>
-              <span className="font-bold text-[#FFB4B4] bg-red-500/15 px-2 py-0.5 rounded">12 días</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick project info */}
-        <div className="p-4 rounded-xl border flex flex-col gap-2.5" style={{ background: "rgba(238,237,254,0.06)", borderColor: "rgba(83,74,183,0.2)" }}>
-          <h4 className="text-xs font-bold text-[#534AB7] uppercase tracking-wider">
-            Programa Clínico Activo
-          </h4>
-          <div className="text-sm font-bold text-white leading-tight">
-            Plataforma de gestión clínica para clínicas y hospitales privados
-          </div>
-          <div className="text-xs text-cyan-100/70">
-            Líder: <strong>Ana Martínez</strong>
-          </div>
-        </div>
+        {progressPanel}
       </div>
     </div>
   );

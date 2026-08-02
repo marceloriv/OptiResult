@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Users2, AlertCircle, RefreshCw, X, Check, Search, Filter, Plus } from "lucide-react";
+import { Users2, RefreshCw, X, Check, Search, Filter, Plus } from "lucide-react";
 
 interface TeamMember {
   id: string;
@@ -131,7 +131,7 @@ export function ResourceManagement() {
 
   return (
     <div
-      className="flex-1 flex flex-col overflow-y-auto p-6 gap-6"
+      className="flex-1 flex flex-col overflow-y-auto p-4 sm:p-6 gap-4 sm:gap-6"
       style={{ background: "#061673", fontFamily: "'Inter', sans-serif" }}
     >
       {/* Toast Notification */}
@@ -143,7 +143,7 @@ export function ResourceManagement() {
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white" style={{ fontSize: 24 }}>
             Módulo de Recursos
@@ -152,7 +152,7 @@ export function ResourceManagement() {
             Visualiza la capacidad del equipo TI/salud para optimizar asignaciones clínicas y operativas.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 rounded-lg px-3 py-1.5" style={{ background: "rgba(13,21,71,0.9)", border: "1px solid rgba(255,255,255,0.08)" }}>
             <Search size={14} color="#79AEF2" />
             <input
@@ -204,9 +204,9 @@ export function ResourceManagement() {
           {filteredTeam.map((member) => {
             const barColor = member.status === "Vacaciones" ? "#79AEF2" : getWorkloadColor(member.workload);
             return (
-              <div key={member.id} className="flex items-center gap-4">
+              <div key={member.id} className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                 {/* Member Info Label */}
-                <div className="w-[180px] flex items-center gap-2 shrink-0">
+                <div className="w-full sm:w-[180px] flex items-center gap-2 shrink-0">
                   <img
                     src={member.avatar}
                     alt={member.name}
@@ -218,31 +218,33 @@ export function ResourceManagement() {
                   </div>
                 </div>
 
-                {/* Progress Bar Container */}
-                <div className="flex-1 bg-[#EEEDFE]/10 h-5 rounded-full relative overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-500 ease-out"
-                    style={{
-                      width: `${member.workload}%`,
-                      background: barColor,
-                    }}
-                  ></div>
-                  <span className="absolute inset-y-0 right-3 flex items-center text-[10px] font-extrabold text-white">
-                    {member.workload}%
-                  </span>
-                </div>
+                <div className="flex-1 flex items-center gap-3">
+                  {/* Progress Bar Container */}
+                  <div className="flex-1 bg-[#EEEDFE]/10 h-5 rounded-full relative overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500 ease-out"
+                      style={{
+                        width: `${member.workload}%`,
+                        background: barColor,
+                      }}
+                    ></div>
+                    <span className="absolute inset-y-0 right-3 flex items-center text-[10px] font-extrabold text-white">
+                      {member.workload}%
+                    </span>
+                  </div>
 
-                {/* Status indicator */}
-                <div className="w-[100px] shrink-0 text-right">
-                  <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    style={{
-                      background: `${barColor}15`,
-                      color: barColor,
-                    }}
-                  >
-                    {getWorkloadLabel(member.workload)}
-                  </span>
+                  {/* Status indicator */}
+                  <div className="w-[100px] shrink-0 text-right">
+                    <span
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{
+                        background: `${barColor}15`,
+                        color: barColor,
+                      }}
+                    >
+                      {getWorkloadLabel(member.workload)}
+                    </span>
+                  </div>
                 </div>
               </div>
             );
@@ -271,13 +273,14 @@ export function ResourceManagement() {
       </div>
 
       {/* Resource Table */}
-      <div className="rounded-xl border shadow-sm overflow-hidden flex flex-col" style={{ background: "rgba(13,21,71,0.9)", borderColor: "rgba(255,255,255,0.08)" }}>
+      <div className="rounded-xl border shadow-sm flex flex-col" style={{ background: "rgba(13,21,71,0.9)", borderColor: "rgba(255,255,255,0.08)" }}>
         <div className="px-6 py-4 border-b border-white/10">
           <h2 className="text-base font-bold text-white" style={{ fontSize: 18 }}>
             Listado Detallado de Asignaciones
           </h2>
         </div>
 
+        <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-white/10" style={{ background: "rgba(255,255,255,0.03)" }}>
@@ -355,6 +358,7 @@ export function ResourceManagement() {
             })}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Reassign Simulation Modal */}

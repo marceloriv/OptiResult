@@ -13,6 +13,7 @@ import {
     Zap,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useIsMobile } from "./use-mobile";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -30,19 +31,11 @@ interface SidebarProps {
   onNavigate: (view: string) => void;
   onLogout: () => void;
   mobileMenuOpen?: boolean;
-  setMobileMenuOpen?: (open: boolean) => void;
 }
 
-export function Sidebar({ activeView, onNavigate, onLogout, mobileMenuOpen, setMobileMenuOpen }: SidebarProps) {
+export function Sidebar({ activeView, onNavigate, onLogout, mobileMenuOpen }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const isMobile = useIsMobile();
 
   // Auto-collapse on mobile
   useEffect(() => {

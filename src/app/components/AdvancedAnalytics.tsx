@@ -166,10 +166,10 @@ function RiskBadge({ risk }: { risk: string }) {
 export function AdvancedAnalytics() {
   return (
     <div
-      className="h-full overflow-y-auto p-6 flex flex-col gap-6"
+      className="h-full overflow-y-auto p-4 sm:p-6 flex flex-col gap-4 sm:gap-6"
       style={{ background: "#061673", fontFamily: "'Inter', sans-serif" }}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Brain size={24} className="text-[#534AB7]" />
@@ -187,7 +187,7 @@ export function AdvancedAnalytics() {
         </button>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         <KpiCard
           title="Riesgo de retraso"
           value="68%"
@@ -218,8 +218,8 @@ export function AdvancedAnalytics() {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-base font-bold text-white">
@@ -281,7 +281,7 @@ export function AdvancedAnalytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
           <h2 className="text-base font-bold text-white mb-1">
             Riesgo predictivo por proyecto
@@ -339,8 +339,8 @@ export function AdvancedAnalytics() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-1 rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
           <div className="flex items-center gap-2 mb-4">
             <Lightbulb size={18} className="text-[#534AB7]" />
             <h2 className="text-base font-bold text-white">
@@ -358,7 +358,7 @@ export function AdvancedAnalytics() {
           </div>
         </div>
 
-        <div className="col-span-2 rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
+        <div className="lg:col-span-2 rounded-2xl border shadow-sm p-5" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
           <h2 className="text-base font-bold text-white mb-1">
             Matriz de riesgos clínicos
           </h2>
@@ -366,7 +366,7 @@ export function AdvancedAnalytics() {
             Vista ejecutiva para priorizar acciones correctivas en la operación salud.
           </p>
 
-          <div className="overflow-hidden rounded-xl border" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+          <div className="overflow-x-auto rounded-xl border" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
             <table className="w-full text-sm">
               <thead className="text-cyan-100/60" style={{ background: "rgba(255,255,255,0.04)" }}>
                 <tr>
