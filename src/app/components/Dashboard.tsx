@@ -173,7 +173,7 @@ export function Dashboard() {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          <div className="absolute flex flex-col items-center justify-center">
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <span className="text-3xl font-extrabold text-[#79AEF2]">74%</span>
             <span className="text-[10px] font-bold text-cyan-100/50 uppercase tracking-wider mt-0.5">Entregables</span>
           </div>
@@ -283,7 +283,7 @@ export function Dashboard() {
         </div>
 
         {/* Kanban Board */}
-        <div className="flex-1 flex flex-col min-h-[480px]">
+        <div className="grow shrink-0 flex flex-col min-h-[480px]">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white" style={{ fontSize: 18 }}>
               Tablero de Tareas Kanban
