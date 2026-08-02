@@ -8,7 +8,8 @@ import { Collaboration } from "./components/Collaboration";
 import { Login } from "./components/Login";
 import { AgileBoard } from "./components/AgileBoard";
 import { AdvancedAnalytics } from "./components/AdvancedAnalytics";
-import { Bell, Search } from "lucide-react";
+import { Configuration } from "./components/Configuration";
+import { Bell, Menu, Search, X } from "lucide-react";
 
 type View =
   | "dashboard"
@@ -20,120 +21,10 @@ type View =
   | "analiticas"
   | "configuracion";
 
-const viewTitles: Record<View, string> = {
-  dashboard: "Dashboard Principal",
-  proyectos: "Módulo de Proyectos (Vista Gantt)",
-  tablero: "Tablero Ágil",
-  recursos: "Gestor de Recursos",
-  comunicacion: "Colaboración del Equipo",
-  reportes: "Módulo de Reportes",
-  analiticas: "Analíticas Avanzadas",
-  configuracion: "Configuración del Sistema",
-};
-
-function ConfiguracionView() {
-  return (
-    <div
-      className="flex flex-col p-6 gap-6 h-full overflow-y-auto"
-      style={{ background: "#061673", fontFamily: "'Inter', sans-serif" }}
-    >
-      <div>
-        <h1 className="text-2xl font-bold text-white" style={{ fontSize: 24 }}>
-          Configuración del Sistema
-        </h1>
-        <p className="text-sm text-cyan-100/70 mt-1">
-          Configura las preferencias de tu espacio de trabajo y cuenta de OptiResult para operación clínica.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-6">
-        <div className="rounded-xl p-5 border shadow-sm flex flex-col gap-4" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
-          <h3 className="text-base font-bold text-white">
-            Preferencias del Espacio de Trabajo
-          </h3>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <span className="text-sm font-semibold text-white block">
-                  Notificaciones por Email
-                </span>
-                <span className="text-xs text-cyan-100/60">
-                  Recibe alertas semanales sobre el estado clínico y operativo.
-                </span>
-              </div>
-              <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#534AB7]" />
-            </div>
-
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <span className="text-sm font-semibold text-white block">
-                  Integración con canales internos
-                </span>
-                <span className="text-xs text-cyan-100/60">
-                  Enviar alertas automáticas a canales vinculados.
-                </span>
-              </div>
-              <input type="checkbox" defaultChecked className="w-4 h-4 accent-[#534AB7]" />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-sm font-semibold text-white block">
-                  Auto-balancear recursos
-                </span>
-                <span className="text-xs text-cyan-100/60">
-                  Sugerir reasignaciones cuando la carga supere el 90%.
-                </span>
-              </div>
-              <input type="checkbox" className="w-4 h-4 accent-[#534AB7]" />
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-xl p-5 border shadow-sm flex flex-col gap-4" style={{ background: "rgba(13,21,71,0.92)", borderColor: "rgba(255,255,255,0.08)" }}>
-          <h3 className="text-base font-bold text-white">
-            Seguridad y Cumplimiento
-          </h3>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div>
-                <span className="text-sm font-semibold text-white block">
-                  Autenticación de Dos Factores
-                </span>
-                <span className="text-xs text-cyan-100/60">
-                  Protege la cuenta con un código de seguridad adicional.
-                </span>
-              </div>
-              <button className="text-xs font-bold text-[#534AB7] bg-[#EEEDFE] px-3 py-1.5 rounded-lg hover:bg-[#dbdaf9] transition-all">
-                Activar
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <span className="text-sm font-semibold text-white block">
-                  Cumplimiento normativo
-                </span>
-                <span className="text-xs text-cyan-100/60">
-                  GDPR, CCPA, Ley 21.719 e ISO/IEC 25010.
-                </span>
-              </div>
-              <button className="text-xs font-bold text-[#534AB7] bg-[#EEEDFE] px-3 py-1.5 rounded-lg hover:bg-[#dbdaf9] transition-all">
-                Revisar
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeView, setActiveView] = useState<View>("dashboard");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const notifications = 3;
 
   if (!isLoggedIn) {
@@ -151,29 +42,50 @@ export default function App() {
     >
       <Sidebar
         activeView={activeView}
-        onNavigate={(v) => setActiveView(v as View)}
+        onNavigate={(v) => {
+          setActiveView(v as View);
+          setMobileMenuOpen(false);
+        }}
         onLogout={() => setIsLoggedIn(false)}
+        mobileMenuOpen={mobileMenuOpen}
       />
+
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       <div className="flex flex-col flex-1 overflow-hidden">
         <header
-          className="flex items-center justify-between px-6 py-4 shrink-0"
+          className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 shrink-0"
           style={{
             borderBottom: "1px solid rgba(255,255,255,0.08)",
             background: "rgba(6,22,115,0.9)",
           }}
         >
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-cyan-100/70">OptiResult</span>
-            <span className="text-cyan-100/30 text-xs">/</span>
-            <span className="text-xs text-[#79AEF2] font-semibold">
-              {viewTitles[activeView]}
+          <div className="flex items-center gap-3 min-w-0">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden rounded-xl p-2 bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
+              aria-label={mobileMenuOpen ? "Cerrar menú de navegación" : "Abrir menú de navegación"}
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X size={18} color="#C7D2FE" /> : <Menu size={18} color="#C7D2FE" />}
+            </button>
+
+            <span className="text-xs font-bold text-cyan-100/70 hidden sm:inline">OptiResult</span>
+            <span className="text-cyan-100/30 text-xs hidden sm:inline">/</span>
+            <span className="text-xs text-[#79AEF2] font-semibold truncate">
+              {{"dashboard":"Dashboard Principal","proyectos":"Módulo de Proyectos (Vista Gantt)","tablero":"Tablero Ágil","recursos":"Gestor de Recursos","comunicacion":"Colaboración del Equipo","reportes":"Módulo de Reportes","analiticas":"Analíticas Avanzadas","configuracion":"Configuración del Sistema"}[activeView]}
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <div
-              className="flex items-center gap-2 rounded-xl px-3 py-2"
+              className="hidden md:flex items-center gap-2 rounded-xl px-3 py-2"
               style={{ background: "rgba(13,21,71,0.9)", border: "1px solid rgba(255,255,255,0.08)" }}
             >
               <Search size={14} color="#79AEF2" />
@@ -206,7 +118,7 @@ export default function App() {
               )}
             </button>
 
-            <div className="w-px h-6 bg-white/10" />
+            <div className="hidden sm:block w-px h-6 bg-white/10" />
 
             <div className="flex items-center gap-2">
               <div
@@ -232,7 +144,7 @@ export default function App() {
           {activeView === "comunicacion" && <Collaboration />}
           {activeView === "reportes" && <Reports />}
           {activeView === "analiticas" && <AdvancedAnalytics />}
-          {activeView === "configuracion" && <ConfiguracionView />}
+          {activeView === "configuracion" && <Configuration />}
         </main>
       </div>
     </div>

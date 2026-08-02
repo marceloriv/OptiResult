@@ -1,5 +1,4 @@
-import React from "react";
-import { Calendar, ChevronRight, Users, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { ChevronRight, CheckCircle, Clock } from "lucide-react";
 
 interface GanttTask {
   id: string;
@@ -67,13 +66,52 @@ const teamMembers = [
 ];
 
 export function ProjectGantt() {
+  const teamPanel = (
+    <>
+      <div>
+        <h2 className="text-base font-bold text-slate-900" style={{ fontSize: 16 }}>
+          Miembros del Equipo
+        </h2>
+        <p className="text-xs text-slate-400 mt-1">
+          Asignaciones y carga en este sprint.
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {teamMembers.map((member) => (
+          <div
+            key={member.name}
+            className="bg-white rounded-xl p-3.5 border border-slate-100 shadow-sm flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2.5">
+              <img
+                src={member.avatar}
+                alt={member.name}
+                className="w-8 h-8 rounded-full object-cover"
+              />
+              <div>
+                <h4 className="text-xs font-bold text-slate-800">{member.name}</h4>
+                <span className="text-[10px] text-slate-400 font-medium">{member.role}</span>
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              <span className="text-[10px] font-bold text-[#534AB7] bg-[#EEEDFE] px-2 py-0.5 rounded-full">
+                {member.tasksCount} tareas
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+
   return (
     <div
       className="flex-1 flex overflow-hidden h-full"
       style={{ background: "#5e19df", fontFamily: "'Inter', sans-serif" }}
     >
       {/* Gantt Timeline Area (Left) */}
-      <div className="flex-1 flex flex-col p-6 overflow-y-auto gap-6">
+      <div className="flex-1 flex flex-col p-4 sm:p-6 overflow-y-auto gap-4 sm:gap-6">
         {/* Project Header */}
         <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex flex-col gap-4">
           <div className="flex items-center justify-between">
@@ -113,7 +151,7 @@ export function ProjectGantt() {
         </div>
 
         {/* Timeline Chart Container */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col overflow-x-auto">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-800">Diagrama Gantt — Planificación mensual (4 Semanas)</h2>
             <div className="flex items-center gap-3 text-xs">
@@ -176,47 +214,21 @@ export function ProjectGantt() {
             </div>
           </div>
         </div>
+        {/* Team members panel (mobile) */}
+        <div
+          className="lg:hidden flex flex-col p-6 gap-6 rounded-xl border border-white/10 shadow-sm"
+          style={{ background: "#3c2494" }}
+        >
+          {teamPanel}
+        </div>
       </div>
 
-      {/* Team Members Right Sidebar Panel */}
+      {/* Team Members Right Sidebar Panel (desktop) */}
       <div
-        className="w-[280px] border-l border-slate-100 flex flex-col p-6 gap-6 shrink-0"
+        className="hidden lg:flex w-[280px] border-l border-slate-100 flex-col p-6 gap-6 shrink-0"
         style={{ background: "#3c2494" }}
       >
-        <div>
-          <h2 className="text-base font-bold text-slate-900" style={{ fontSize: 16 }}>
-            Miembros del Equipo
-          </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Asignaciones y carga en este sprint.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          {teamMembers.map((member) => (
-            <div
-              key={member.name}
-              className="bg-white rounded-xl p-3.5 border border-slate-100 shadow-sm flex items-center justify-between"
-            >
-              <div className="flex items-center gap-2.5">
-                <img
-                  src={member.avatar}
-                  alt={member.name}
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <div>
-                  <h4 className="text-xs font-bold text-slate-800">{member.name}</h4>
-                  <span className="text-[10px] text-slate-400 font-medium">{member.role}</span>
-                </div>
-              </div>
-              <div className="text-right shrink-0">
-                <span className="text-[10px] font-bold text-[#534AB7] bg-[#EEEDFE] px-2 py-0.5 rounded-full">
-                  {member.tasksCount} tareas
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+        {teamPanel}
       </div>
     </div>
   );

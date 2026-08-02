@@ -15,7 +15,10 @@ import {
   ChevronDown,
   Check,
   CheckCheck,
+  Menu,
+  X,
 } from "lucide-react";
+import { useIsMobile } from "./use-mobile";
 
 interface Message {
   id: string;
@@ -149,11 +152,18 @@ export function Collaboration() {
   const [activeChannel, setActiveChannel] = useState("2");
   const [input, setInput] = useState("");
   const [chatMessages, setChatMessages] = useState(messages["2"] || []);
+  const [showChannels, setShowChannels] = useState(false);
+  const isMobile = useIsMobile();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
+
+  function selectChannel(id: string) {
+    setActiveChannel(id);
+    setShowChannels(false);
+  }
 
   function sendMessage() {
     if (!input.trim()) return;
@@ -176,8 +186,17 @@ export function Collaboration() {
     <div className="flex h-full overflow-hidden">
       {/* Channel list */}
       <div
-        className="flex flex-col shrink-0 overflow-y-auto"
-        style={{ width: 220, borderRight: "1px solid var(--border)", background: "rgba(6,22,115,0.3)" }}
+        className={`${isMobile ? "fixed inset-y-0 left-0" : "relative"} flex flex-col shrink-0 overflow-y-auto`}
+        style={{
+          width: 220,
+          borderRight: isMobile ? "none" : "1px solid var(--border)",
+          background: isMobile ? "var(--background)" : "rgba(6,22,115,0.3)",
+          boxShadow: isMobile ? "0 8px 40px rgba(0,0,0,0.45)" : "none",
+          transform: isMobile ? (showChannels ? "translateX(0)" : "translateX(-100%)") : "none",
+          transition: "transform 0.3s ease",
+          visibility: isMobile && !showChannels ? "hidden" : "visible",
+          zIndex: 40,
+        }}
       >
         {/* Search */}
         <div className="p-3" style={{ borderBottom: "1px solid var(--border)" }}>
@@ -206,7 +225,7 @@ export function Collaboration() {
           {channels.filter((c) => c.type === "public").map((ch) => (
             <button
               key={ch.id}
-              onClick={() => setActiveChannel(ch.id)}
+              onClick={() => selectChannel(ch.id)}
               className="flex items-center justify-between w-full rounded-lg px-2 py-1.5 transition-colors"
               style={{
                 background: activeChannel === ch.id ? "var(--sidebar-accent)" : "transparent",
@@ -241,7 +260,7 @@ export function Collaboration() {
           {channels.filter((c) => c.type === "private").map((ch) => (
             <button
               key={ch.id}
-              onClick={() => setActiveChannel(ch.id)}
+              onClick={() => selectChannel(ch.id)}
               className="flex items-center justify-between w-full rounded-lg px-2 py-1.5 transition-colors"
               style={{
                 background: activeChannel === ch.id ? "var(--sidebar-accent)" : "transparent",
@@ -297,23 +316,44 @@ export function Collaboration() {
         </div>
       </div>
 
+      {/* Channels drawer overlay (mobile) */}
+      {isMobile && showChannels && (
+        <div
+          className="fixed inset-0 bg-black/50"
+          style={{ zIndex: 30 }}
+          onClick={() => setShowChannels(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Chat area */}
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Chat header */}
         <div
-          className="flex items-center justify-between px-5 py-3 shrink-0"
+          className="flex items-center justify-between px-4 sm:px-5 py-3 shrink-0"
           style={{ borderBottom: "1px solid var(--border)" }}
         >
-          <div className="flex items-center gap-3">
-            <Hash size={16} color="var(--muted-foreground)" />
-            <span style={{ fontWeight: 600, color: "var(--foreground)", fontSize: "0.95rem" }}>
+          <div className="flex items-center gap-3 min-w-0">
+            {isMobile && (
+              <button
+                onClick={() => setShowChannels(!showChannels)}
+                className="rounded-lg p-2 transition-colors shrink-0"
+                style={{ color: "var(--muted-foreground)", background: "var(--muted)", border: "none", cursor: "pointer" }}
+                aria-label={showChannels ? "Cerrar lista de canales" : "Abrir lista de canales"}
+                aria-expanded={showChannels}
+              >
+                {showChannels ? <X size={16} /> : <Menu size={16} />}
+              </button>
+            )}
+            <Hash size={16} color="var(--muted-foreground)" className="shrink-0" />
+            <span className="truncate" style={{ fontWeight: 600, color: "var(--foreground)", fontSize: "0.95rem" }}>
               {activeChannelData?.name ?? "portal-pacientes"}
             </span>
-            <span style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>
+            <span className="hidden sm:inline" style={{ fontSize: "0.72rem", color: "var(--muted-foreground)" }}>
               · 6 participantes
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <button style={{ color: "var(--muted-foreground)", background: "none", border: "none", cursor: "pointer" }}>
               <Phone size={16} />
             </button>
@@ -381,7 +421,7 @@ export function Collaboration() {
 
       {/* Activity panel */}
       <div
-        className="shrink-0 flex flex-col overflow-hidden"
+        className="hidden lg:flex shrink-0 flex-col overflow-hidden"
         style={{ width: 240, borderLeft: "1px solid var(--border)" }}
       >
         <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
