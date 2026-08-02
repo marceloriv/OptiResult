@@ -48,15 +48,8 @@ export default function App() {
         }}
         onLogout={() => setIsLoggedIn(false)}
         mobileMenuOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
       />
-
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-          aria-hidden="true"
-        />
-      )}
 
       <div className="flex flex-col flex-1 overflow-hidden">
         <header

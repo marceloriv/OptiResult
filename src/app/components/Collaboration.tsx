@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { useIsMobile } from "./use-mobile";
+import { OffCanvas } from "./OffCanvas";
 
 interface Message {
   id: string;
@@ -185,17 +186,16 @@ export function Collaboration() {
   return (
     <div className="flex h-full overflow-hidden">
       {/* Channel list */}
-      <div
-        className={`${isMobile ? "fixed inset-y-0 left-0" : "relative"} flex flex-col shrink-0 overflow-y-auto`}
+      <OffCanvas
+        open={showChannels}
+        onClose={() => setShowChannels(false)}
+        width={220}
+        zIndex={40}
+        className="flex flex-col"
         style={{
-          width: 220,
           borderRight: isMobile ? "none" : "1px solid var(--border)",
           background: isMobile ? "var(--background)" : "rgba(6,22,115,0.3)",
           boxShadow: isMobile ? "0 8px 40px rgba(0,0,0,0.45)" : "none",
-          transform: isMobile ? (showChannels ? "translateX(0)" : "translateX(-100%)") : "none",
-          transition: "transform 0.3s ease",
-          visibility: isMobile && !showChannels ? "hidden" : "visible",
-          zIndex: 40,
         }}
       >
         {/* Search */}
@@ -314,17 +314,7 @@ export function Collaboration() {
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Channels drawer overlay (mobile) */}
-      {isMobile && showChannels && (
-        <div
-          className="fixed inset-0 bg-black/50"
-          style={{ zIndex: 30 }}
-          onClick={() => setShowChannels(false)}
-          aria-hidden="true"
-        />
-      )}
+      </OffCanvas>
 
       {/* Chat area */}
       <div className="flex flex-col flex-1 overflow-hidden">
