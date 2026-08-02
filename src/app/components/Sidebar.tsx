@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useIsMobile } from "./use-mobile";
+import { OffCanvas } from "./OffCanvas";
 
 const navItems = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -31,9 +32,10 @@ interface SidebarProps {
   onNavigate: (view: string) => void;
   onLogout: () => void;
   mobileMenuOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ activeView, onNavigate, onLogout, mobileMenuOpen }: SidebarProps) {
+export function Sidebar({ activeView, onNavigate, onLogout, mobileMenuOpen, onClose }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const isMobile = useIsMobile();
 
@@ -45,21 +47,20 @@ export function Sidebar({ activeView, onNavigate, onLogout, mobileMenuOpen }: Si
   }, [isMobile]);
 
   return (
-    <aside
-      className="flex flex-col h-screen transition-all duration-300 relative"
+    <OffCanvas
+      open={!!mobileMenuOpen}
+      onClose={() => onClose?.()}
+      width={isMobile ? (mobileMenuOpen ? 240 : 0) : (collapsed ? 64 : 240)}
+      zIndex={50}
+      transition="all 0.3s ease"
+      role="navigation"
+      ariaLabel="Navegación principal"
+      className="flex flex-col h-screen"
       style={{
-        width: isMobile ? (mobileMenuOpen ? "240px" : "0px") : (collapsed ? "64px" : "240px"),
         background: "var(--sidebar)",
         borderRight: isMobile ? "none" : "1px solid var(--sidebar-border)",
         flexShrink: 0,
-        position: isMobile ? "fixed" : "relative",
-        zIndex: isMobile ? 50 : "auto",
-        transform: isMobile ? (mobileMenuOpen ? "translateX(0)" : "translateX(-100%)") : "translateX(0)",
-        visibility: isMobile && !mobileMenuOpen ? "hidden" : "visible",
       }}
-      role="navigation"
-      aria-label="Navegación principal"
-      aria-hidden={isMobile && !mobileMenuOpen ? "true" : undefined}
     >
       <div
         className="flex items-center gap-3 px-4 py-5"
@@ -219,6 +220,6 @@ export function Sidebar({ activeView, onNavigate, onLogout, mobileMenuOpen }: Si
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
       </button>
-    </aside>
+    </OffCanvas>
   );
 }
